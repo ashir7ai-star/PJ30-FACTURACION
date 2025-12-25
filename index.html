@@ -1032,6 +1032,17 @@
       showProgress(0, 'Preparing upload...');
       updateStatus('processing');
 
+      // Obtener el número actual de facturas antes de subir
+      let initialInvoiceCount = 0;
+      try {
+        const metricsResponse = await fetch(`${CONFIG.SHEETS_API_URL}?action=metrics`);
+        const metricsData = await metricsResponse.json();
+        initialInvoiceCount = metricsData.totalInvoices || 0;
+        console.log('Initial invoice count:', initialInvoiceCount);
+      } catch (error) {
+        console.warn('Could not get initial invoice count:', error);
+      }
+
       const formData = new FormData();
       formData.append('invoiceId', currentInvoiceId);
       formData.append('source', 'file');
@@ -1056,7 +1067,7 @@
         updateProgressStep(2, 'active');
         showProgress(50, 'Extracting invoice data...');
 
-        simulateProgress();
+        simulateProgress(initialInvoiceCount);
 
       } catch (error) {
         console.error('Upload error:', error);
@@ -1067,7 +1078,40 @@
       }
     }
 
-    function simulateProgress() {
+    async function waitForInvoiceProcessing(initialCount) {
+      const maxAttempts = 15; // 15 intentos x 2 segundos = 30 segundos max
+      let attempts = 0;
+      
+      return new Promise((resolve, reject) => {
+        const checkInterval = setInterval(async () => {
+          attempts++;
+          
+          try {
+            // Verificar si hay una nueva factura en el Sheet
+            const response = await fetch(`${CONFIG.SHEETS_API_URL}?action=metrics`);
+            const data = await response.json();
+            
+            console.log(`Polling attempt ${attempts}: ${data.totalInvoices} invoices (esperando ${initialCount + 1})`);
+            
+            // Si el número de facturas aumentó, n8n terminó de procesar
+            if (data.totalInvoices > initialCount) {
+              clearInterval(checkInterval);
+              resolve(true);
+            }
+            
+            // Timeout después de 30 segundos
+            if (attempts >= maxAttempts) {
+              clearInterval(checkInterval);
+              resolve(false); // No fallar, solo timeout
+            }
+          } catch (error) {
+            console.error('Error en polling:', error);
+          }
+        }, 2000); // Revisar cada 2 segundos
+      });
+    }
+
+    async function simulateProgress(initialInvoiceCount) {
       setTimeout(() => {
         updateProgressStep(2, 'complete');
         updateProgressStep(3, 'active');
@@ -1080,19 +1124,30 @@
         showProgress(90, 'Saving to database...');
       }, 3000);
 
-      setTimeout(() => {
+      setTimeout(async () => {
         updateProgressStep(4, 'complete');
-        showProgress(100, 'Invoice processed successfully!');
-        updateStatus('success');
-        showToast('Success', 'Invoice processed and saved successfully', 'success');
+        showProgress(100, 'Waiting for confirmation...');
         
-        // Esperar 3 segundos adicionales para que n8n termine de escribir
+        // Esperar a que n8n termine de procesar
+        console.log('Esperando a que n8n termine de procesar...');
+        const processed = await waitForInvoiceProcessing(initialInvoiceCount);
+        
+        if (processed) {
+          showProgress(100, 'Invoice processed successfully!');
+          updateStatus('success');
+          showToast('Success', 'Invoice processed and saved successfully', 'success');
+        } else {
+          showProgress(100, 'Processing may take longer...');
+          updateStatus('success');
+          showToast('Processing', 'Invoice uploaded. Refresh the page to see updated data.', 'success');
+        }
+        
         setTimeout(() => {
           hideProgress();
           console.log('Refreshing dashboard data...');
           loadDashboardMetrics();
           loadRecentInvoices();
-        }, 3000);
+        }, 1500);
       }, 4500);
     }
 
