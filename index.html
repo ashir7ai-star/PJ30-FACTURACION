@@ -18,7 +18,7 @@
       --shadow: 0 20px 60px rgba(0,0,0,.35);
       --radius: 18px;
 
-      --accent: #c9d4ff;   /* suave, no llamativo */
+      --accent: #c9d4ff;
       --good: #bfe8d1;
       --warn: #ffe7b3;
       --bad:  #ffb6b6;
@@ -390,7 +390,6 @@
     </header>
 
     <div class="grid">
-      <!-- LEFT -->
       <section class="card">
         <h2>Cargar factura</h2>
         <p class="sub">
@@ -403,8 +402,8 @@
             <div class="hint">
               <strong style="color: var(--text); font-weight: 720;">Métodos de carga</strong><br>
               • Arrastra y suelta aquí (desktop)<br>
-              • “Elegir archivo” (Broadway Files / explorador)<br>
-              • “Tomar foto” (móvil / laptop con cámara)
+              • "Elegir archivo" (Broadway Files / explorador)<br>
+              • "Tomar foto" (móvil / laptop con cámara)
             </div>
 
             <div class="actions">
@@ -460,7 +459,6 @@
         </div>
       </section>
 
-      <!-- RIGHT -->
       <aside class="card">
         <div class="statusBox">
           <div class="statusHeader">
@@ -499,21 +497,11 @@
   </div>
 
   <script>
-    /***********************
-     * CONFIG (EDITA AQUÍ)
-     ***********************/
     const CONFIG = {
-      // 1) Pega aquí el Production URL del Webhook Trigger de n8n (POST)
-      // Ejemplo: "https://TU-N8N.DOMINIO/webhook/invoice-start"
       N8N_START_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
-
-      // 2) Pega aquí el endpoint SSE (GET) de tu backend o de tu n8n proxy
-      // Debe aceptar ?invoiceId=...
-      // Ejemplo: "https://TU-BACKEND.DOMINIO/sse"
       SSE_URL: "PASTE_YOUR_SSE_URL_HERE"
     };
 
-    // UI refs
     const fileInput = document.getElementById('fileInput');
     const btnChoose = document.getElementById('btnChoose');
     const btnCamera = document.getElementById('btnCamera');
@@ -546,7 +534,6 @@
     const toastText = document.getElementById('toastText');
     const toastClose = document.getElementById('toastClose');
 
-    // Camera refs
     const cameraBox = document.getElementById('cameraBox');
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -556,22 +543,19 @@
     const btnStopCam = document.getElementById('btnStopCam');
 
     let selectedFile = null;
-    let selectedBlob = null; // for captured photo
+    let selectedBlob = null;
     let selectedFileName = null;
     let currentInvoiceId = null;
     let sse = null;
     let camStream = null;
 
-    // Init
     startUrlHint.textContent = CONFIG.N8N_START_WEBHOOK_URL;
     sseUrlHint.textContent = CONFIG.SSE_URL;
 
     addLog("Listo. Selecciona un archivo o toma una foto para iniciar.");
     setStatus("idle", "Sin iniciar", 0);
 
-    // Helpers
     function uuidv4(){
-      // Simple UUID v4
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
         const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15) >> 0;
         const v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -621,7 +605,6 @@
       const p = Math.max(0, Math.min(100, Number(progress || 0)));
       progressBar.style.width = p + "%";
 
-      // Dot + badge subtle coloring
       if (kind === "ok") {
         statusDot.style.background = "rgba(191,232,209,.85)";
         statusBadge.style.borderColor = "rgba(191,232,209,.35)";
@@ -669,14 +652,12 @@
       setConn(true,"Listo");
     }
 
-    // File choose
     btnChoose.addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", (e) => {
       if (!e.target.files || !e.target.files[0]) return;
       handleSelectedFile(e.target.files[0]);
     });
 
-    // Drag & drop
     dropZone.addEventListener("dragover", (e)=> {
       e.preventDefault();
       dropZone.style.background = "rgba(255,255,255,0.05)";
@@ -692,7 +673,6 @@
     });
 
     function handleSelectedFile(f){
-      // Accept PDF or image
       const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
       const isImg = (f.type || "").startsWith("image/");
       if (!isPdf && !isImg){
@@ -723,7 +703,6 @@
       setStatus("warn","Listo para enviar",10);
     }
 
-    // Camera
     btnCamera.addEventListener("click", async () => {
       try{
         await openCamera();
@@ -783,7 +762,6 @@
         showFileMeta(selectedFileName, `Foto • ${humanSize(blob.size)}`);
         enableSend(true);
 
-        // Preview captured image
         const url = URL.createObjectURL(blob);
         imgPreview.src = url;
         imgPreview.style.display = "block";
@@ -795,13 +773,11 @@
       }, "image/jpeg", 0.92);
     });
 
-    // Reset
     btnReset.addEventListener("click", () => {
       clearSelection();
       stopCamera();
     });
 
-    // Send to n8n
     btnSend.addEventListener("click", async () => {
       try{
         if (!CONFIG.N8N_START_WEBHOOK_URL || CONFIG.N8N_START_WEBHOOK_URL.includes("PASTE_")){
@@ -822,14 +798,13 @@
         form.append("invoiceId", currentInvoiceId);
         form.append("source", selectedBlob ? "camera" : "file");
         form.append("client", "Yehuda Levy Frontend");
-        // Adjuntar archivo
+
         if (selectedFile){
           form.append("file", selectedFile, selectedFile.name);
         } else if (selectedBlob){
           form.append("file", selectedBlob, selectedFileName);
         }
 
-        // 1) Dispara el workflow
         const res = await fetch(CONFIG.N8N_START_WEBHOOK_URL, {
           method: "POST",
           body: form
@@ -844,12 +819,11 @@
         setStatus("warn","Procesando…",25);
         addLog("Workflow iniciado. Esperando progreso…");
 
-        // 2) Conectar SSE (si ya existe)
         if (CONFIG.SSE_URL && !CONFIG.SSE_URL.includes("PASTE_")){
           openSSE(currentInvoiceId);
         } else {
-          addLog("SSE no configurado todavía. (Se mostrará progreso cuando lo conectemos)");
-          toastShow("Enviado", "El workflow inició. Aún falta conectar SSE para ver progreso en vivo.");
+          addLog("SSE no configurado todavía.");
+          toastShow("Enviado", "El workflow inició correctamente.");
         }
 
       }catch(err){
@@ -857,59 +831,41 @@
         setConn(false, "Error");
         setStatus("bad","Error al enviar",0);
         addLog(`Error: ${err?.message || err}`);
-        toastShow("Error", reminding(err?.message || String(err)));
+        toastShow("Error", String(err?.message || err).substring(0, 160));
       }
     });
 
     async function safeReadText(res){
       try { return await res.text(); } catch { return ""; }
     }
-    function reminding(msg){
-      // mensaje corto para toast
-      if (msg.length > 160) return msg.slice(0, 160) + "…";
-      return msg;
-    }
 
-    // SSE
     function openSSE(invoiceId){
       closeSSE();
-
       const url = new URL(CONFIG.SSE_URL);
       url.searchParams.set("invoiceId", invoiceId);
-
       addLog(`Conectando SSE: ${url.toString()}`);
       setConn(true, "Conectando SSE…");
-
       sse = new EventSource(url.toString(), { withCredentials: false });
-
       sse.onopen = () => {
         setConn(true, "SSE conectado");
-        addLog("SSE conectado. Recibiendo estados en tiempo real.");
+        addLog("SSE conectado.");
       };
-
       sse.onerror = () => {
         setConn(false, "SSE desconectado");
-        addLog("SSE desconectado o con error. (Esto es normal si aún no existe el endpoint)");
-        // No cerramos forzadamente: EventSource reintenta solo.
+        addLog("SSE desconectado.");
       };
-
       sse.onmessage = (evt) => {
-        // Esperamos JSON con:
-        // { invoiceId, status, message, progress }
         try{
           const data = JSON.parse(evt.data);
-
           const st = String(data.status || "").toLowerCase();
           const msg = data.message || "Actualización";
-          const prog = Number.isFinite(Number(data.progress)) ? Number(data.progress) : guessProgress(st);
-
-          addLog(`[${st || "status"}] ${msg}`);
-
+          const prog = Number.isFinite(Number(data.progress)) ? Number(data.progress) : 30;
+          addLog(`[${st}] ${msg}`);
           if (st === "completed"){
             setStatus("ok","Completado",100);
             setConn(true,"Listo");
-            toastShow("Completado", "La factura fue procesada y guardada.");
-            closeSSE(); // opcional: cerrar al terminar
+            toastShow("Completado", "Factura procesada correctamente.");
+            closeSSE();
           } else if (st === "error"){
             setStatus("bad","Error",0);
             setConn(false,"Error");
@@ -917,11 +873,11 @@
             closeSSE();
             enableSend(true);
           } else {
-            setStatus("warn", prettyStatus(st), prog);
+            setStatus("warn", msg, prog);
             setConn(true,"Procesando");
           }
         }catch(e){
-          addLog("SSE: mensaje no-JSON recibido.");
+          addLog("SSE: mensaje no-JSON.");
         }
       };
     }
@@ -934,33 +890,7 @@
       }
     }
 
-    function prettyStatus(st){
-      const map = {
-        queued: "En cola…",
-        processing: "Procesando…",
-        ocr_done: "OCR completado",
-        analysis_done: "Análisis completado",
-        completed: "Completado",
-        error: "Error"
-      };
-      return map[st] || "Procesando…";
-    }
-
-    function guessProgress(st){
-      const map = {
-        queued: 20,
-        processing: 35,
-        ocr_done: 60,
-        analysis_done: 85,
-        completed: 100,
-        error: 0
-      };
-      return map[st] ?? 30;
-    }
-
-    // Start with a "ready" connection status
     setConn(true, "Listo");
   </script>
 </body>
 </html>
-
