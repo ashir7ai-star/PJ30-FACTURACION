@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yehuda Levy — Lector de Facturas</title>
+  <meta name="description" content="Portal seguro para cargar y procesar facturas — Yehuda Levy." />
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.08);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.68);
+      --muted2: rgba(255,255,255,0.52);
+      --line: rgba(255,255,255,0.10);
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+
+      --accent: #c9d4ff;   /* suave, no llamativo */
+      --good: #bfe8d1;
+      --warn: #ffe7b3;
+      --bad:  #ffb6b6;
+
+      --btn: rgba(255,255,255,0.10);
+      --btnHover: rgba(255,255,255,0.14);
+      --btnBorder: rgba(255,255,255,0.18);
+      --focus: rgba(201,212,255,0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(201,212,255,.12), transparent 55%),
+        radial-gradient(900px 700px at 85% 30%, rgba(191,232,209,.10), transparent 55%),
+        radial-gradient(800px 800px at 50% 100%, rgba(255,255,255,.06), transparent 50%),
+        var(--bg);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 36px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 14px;
+      z-index: 5;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap: 12px;
+      min-width: 220px;
+    }
+
+    .logo{
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(201,212,255,.18), rgba(255,255,255,.06));
+      display:grid; place-items:center;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    }
+    .logo svg{ opacity: .92; }
+
+    .brand h1{
+      font-size: 14px;
+      margin: 0;
+      letter-spacing: .3px;
+      font-weight: 680;
+    }
+    .brand p{
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .right{
+      display:flex; align-items:center; gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill{
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      padding: 8px 10px;
+      border-radius: 999px;
+      display:flex; align-items:center; gap: 8px;
+    }
+
+    .grid{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 940px){
+      .grid{ grid-template-columns: 1fr; }
+      header{ position: static; }
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2{
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      letter-spacing: .2px;
+      font-weight: 680;
+    }
+    .card .sub{
+      margin: 0 0 14px 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .drop{
+      border: 1px dashed rgba(255,255,255,0.22);
+      background: rgba(0,0,0,.12);
+      border-radius: 16px;
+      padding: 16px;
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dropTop{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button{
+      appearance: none;
+      border: 1px solid var(--btnBorder);
+      background: var(--btn);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 650;
+      letter-spacing: .2px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: .15s ease;
+      outline: none;
+    }
+    button:hover{ background: var(--btnHover); }
+    button:focus{ box-shadow: 0 0 0 4px var(--focus); }
+    button:disabled{
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .primary{
+      background: rgba(201,212,255,0.16);
+      border-color: rgba(201,212,255,0.32);
+    }
+    .primary:hover{
+      background: rgba(201,212,255,0.20);
+    }
+
+    input[type="file"]{ display:none; }
+
+    .fileMeta{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+    }
+    .fileMeta .name{
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--text);
+      max-width: 520px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fileMeta .small{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .previewRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 520px){
+      .previewRow{ grid-template-columns: 1fr; }
+    }
+
+    .preview{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,.18);
+      min-height: 220px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      position: relative;
+    }
+    .preview img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display:none;
+    }
+    .preview .ph{
+      padding: 14px;
+      text-align:center;
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .statusBox{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .statusHeader{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .dot{
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.35);
+    }
+
+    .progress{
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px;
+      overflow:hidden;
+    }
+    .bar{
+      height: 100%;
+      width: 0%;
+      background: rgba(201,212,255,0.45);
+      transition: width .25s ease;
+    }
+
+    .log{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 10px;
+      max-height: 280px;
+      overflow:auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.82);
+    }
+    .logLine{ margin: 0 0 8px 0; }
+    .logLine span{
+      color: rgba(255,255,255,0.55);
+      margin-right: 8px;
+    }
+
+    .note{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      margin-top: 14px;
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      width: min(720px, calc(100% - 24px));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(10,16,28,0.85);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      padding: 10px 12px;
+      display:none;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 50;
+    }
+    .toast p{
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .toast strong{ color: var(--text); font-weight: 700; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4.5v11L12 22 4 17.5v-11L12 2z" stroke="rgba(255,255,255,.86)" stroke-width="1.6"/>
+            <path d="M12 6.5l4.8 2.7v5.6L12 17.5 7.2 14.8V9.2L12 6.5z" stroke="rgba(201,212,255,.95)" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Yehuda Levy</h1>
+          <p>Portal de carga • Lector de facturas (n8n)</p>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="pill" title="Entorno">
+          <span style="opacity:.9">🔒</span>
+          <span>Procesamiento automatizado</span>
+        </div>
+        <div class="pill" title="Estado de conexión">
+          <span class="dot" id="connDot"></span>
+          <span id="connText">Listo</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="card">
+        <h2>Cargar factura</h2>
+        <p class="sub">
+          Sube un archivo (PDF/JPG/PNG) o toma una foto. Al enviar, se iniciará el flujo de n8n
+          que guardará la factura en Google Drive y los datos en Google Sheets.
+        </p>
+
+        <div class="drop" id="dropZone">
+          <div class="dropTop">
+            <div class="hint">
+              <strong style="color: var(--text); font-weight: 720;">Métodos de carga</strong><br>
+              • Arrastra y suelta aquí (desktop)<br>
+              • “Elegir archivo” (Broadway Files / explorador)<br>
+              • “Tomar foto” (móvil / laptop con cámara)
+            </div>
+
+            <div class="actions">
+              <label>
+                <input id="fileInput" type="file" accept=".pdf,image/*" />
+                <button type="button" class="primary" id="btnChoose">Elegir archivo</button>
+              </label>
+
+              <button type="button" id="btnCamera">Tomar foto</button>
+              <button type="button" id="btnSend" class="primary" disabled>Iniciar procesamiento</button>
+              <button type="button" id="btnReset">Limpiar</button>
+            </div>
+          </div>
+
+          <div class="fileMeta" id="fileMeta" style="display:none;">
+            <div>
+              <div class="name" id="fileName">—</div>
+              <div class="small" id="fileInfo">—</div>
+            </div>
+            <div class="small">
+              ID: <span id="invoiceIdText" style="color: var(--text); font-weight: 700;">—</span>
+            </div>
+          </div>
+
+          <div class="previewRow">
+            <div class="preview">
+              <img id="imgPreview" alt="Vista previa" />
+              <div class="ph" id="imgPlaceholder">
+                Vista previa aparecerá aquí.<br>
+                Para PDF, se mostrará el nombre del archivo.
+              </div>
+            </div>
+
+            <div class="preview" id="cameraBox">
+              <video id="video" autoplay playsinline style="display:none; width:100%; height:100%; object-fit:cover;"></video>
+              <canvas id="canvas" style="display:none;"></canvas>
+              <div class="ph" id="camPlaceholder">
+                Cámara lista para usar cuando presiones <strong>Tomar foto</strong>.<br>
+                (En móviles, te pedirá permiso)
+              </div>
+              <div style="position:absolute; bottom:12px; left:12px; right:12px; display:none; gap:10px;" id="camControls">
+                <button type="button" id="btnSnap" class="primary">Capturar</button>
+                <button type="button" id="btnStopCam">Cerrar cámara</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          <strong style="color: var(--text); font-weight: 720;">Nota:</strong>
+          Este frontend es estático (ideal para GitHub Pages). Para progreso en tiempo real vía SSE,
+          luego conectaremos un endpoint que emitirá los estados del workflow.
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="card">
+        <div class="statusBox">
+          <div class="statusHeader">
+            <div>
+              <h2 style="margin:0;">Estado del procesamiento</h2>
+              <p class="sub" style="margin:6px 0 0 0;">
+                Mensajes en vivo (SSE) o actualizaciones desde n8n.
+              </p>
+            </div>
+            <div class="badge" id="statusBadge">
+              <span class="dot" id="statusDot"></span>
+              <span id="statusText">Sin iniciar</span>
+            </div>
+          </div>
+
+          <div class="progress" aria-label="Progreso">
+            <div class="bar" id="progressBar"></div>
+          </div>
+
+          <div class="log" id="log" aria-label="Registro de eventos"></div>
+
+          <div class="note">
+            <strong style="color: var(--text); font-weight: 720;">Endpoints (configurar):</strong><br>
+            • Webhook n8n (inicio): <span style="color:var(--accent)" id="startUrlHint">—</span><br>
+            • SSE (progreso): <span style="color:var(--accent)" id="sseUrlHint">—</span><br><br>
+            Puedes editar estos valores en el bloque <em>CONFIG</em> del script.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <p id="toastText"></p>
+    <button type="button" id="toastClose">Cerrar</button>
+  </div>
+
+  <script>
+    /***********************
+     * CONFIG (EDITA AQUÍ)
+     ***********************/
+    const CONFIG = {
+      // 1) Pega aquí el Production URL del Webhook Trigger de n8n (POST)
+      // Ejemplo: "https://TU-N8N.DOMINIO/webhook/invoice-start"
+      N8N_START_WEBHOOK_URL: "PASTE_YOUR_N8N_WEBHOOK_URL_HERE",
+
+      // 2) Pega aquí el endpoint SSE (GET) de tu backend o de tu n8n proxy
+      // Debe aceptar ?invoiceId=...
+      // Ejemplo: "https://TU-BACKEND.DOMINIO/sse"
+      SSE_URL: "PASTE_YOUR_SSE_URL_HERE"
+    };
+
+    // UI refs
+    const fileInput = document.getElementById('fileInput');
+    const btnChoose = document.getElementById('btnChoose');
+    const btnCamera = document.getElementById('btnCamera');
+    const btnSend = document.getElementById('btnSend');
+    const btnReset = document.getElementById('btnReset');
+
+    const fileMeta = document.getElementById('fileMeta');
+    const fileNameEl = document.getElementById('fileName');
+    const fileInfoEl = document.getElementById('fileInfo');
+    const invoiceIdText = document.getElementById('invoiceIdText');
+
+    const imgPreview = document.getElementById('imgPreview');
+    const imgPlaceholder = document.getElementById('imgPlaceholder');
+
+    const dropZone = document.getElementById('dropZone');
+
+    const connDot = document.getElementById('connDot');
+    const connText = document.getElementById('connText');
+
+    const statusBadge = document.getElementById('statusBadge');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const progressBar = document.getElementById('progressBar');
+    const logEl = document.getElementById('log');
+
+    const startUrlHint = document.getElementById('startUrlHint');
+    const sseUrlHint = document.getElementById('sseUrlHint');
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    const toastClose = document.getElementById('toastClose');
+
+    // Camera refs
+    const cameraBox = document.getElementById('cameraBox');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const camPlaceholder = document.getElementById('camPlaceholder');
+    const camControls = document.getElementById('camControls');
+    const btnSnap = document.getElementById('btnSnap');
+    const btnStopCam = document.getElementById('btnStopCam');
+
+    let selectedFile = null;
+    let selectedBlob = null; // for captured photo
+    let selectedFileName = null;
+    let currentInvoiceId = null;
+    let sse = null;
+    let camStream = null;
+
+    // Init
+    startUrlHint.textContent = CONFIG.N8N_START_WEBHOOK_URL;
+    sseUrlHint.textContent = CONFIG.SSE_URL;
+
+    addLog("Listo. Selecciona un archivo o toma una foto para iniciar.");
+    setStatus("idle", "Sin iniciar", 0);
+
+    // Helpers
+    function uuidv4(){
+      // Simple UUID v4
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+        const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15) >> 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
+
+    function humanSize(bytes){
+      if (bytes === 0) return "0 B";
+      const k = 1024;
+      const sizes = ["B","KB","MB","GB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1) + " " + sizes[i];
+    }
+
+    function addLog(msg){
+      const t = new Date();
+      const stamp = t.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+      const p = document.createElement("p");
+      p.className = "logLine";
+      p.innerHTML = `<span>${stamp}</span>${escapeHtml(msg)}`;
+      logEl.prepend(p);
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function toastShow(title, body){
+      toastText.innerHTML = `<strong>${escapeHtml(title)}</strong> — ${escapeHtml(body)}`;
+      toast.style.display = "flex";
+    }
+    toastClose.addEventListener("click", ()=> toast.style.display="none");
+
+    function setConn(connected, text){
+      connDot.style.background = connected ? "rgba(191,232,209,.85)" : "rgba(255,255,255,.35)";
+      connText.textContent = text;
+    }
+
+    function setStatus(kind, text, progress){
+      statusText.textContent = text;
+      const p = Math.max(0, Math.min(100, Number(progress || 0)));
+      progressBar.style.width = p + "%";
+
+      // Dot + badge subtle coloring
+      if (kind === "ok") {
+        statusDot.style.background = "rgba(191,232,209,.85)";
+        statusBadge.style.borderColor = "rgba(191,232,209,.35)";
+        statusBadge.style.background = "rgba(191,232,209,.08)";
+      } else if (kind === "warn") {
+        statusDot.style.background = "rgba(255,231,179,.85)";
+        statusBadge.style.borderColor = "rgba(255,231,179,.35)";
+        statusBadge.style.background = "rgba(255,231,179,.08)";
+      } else if (kind === "bad") {
+        statusDot.style.background = "rgba(255,182,182,.85)";
+        statusBadge.style.borderColor = "rgba(255,182,182,.35)";
+        statusBadge.style.background = "rgba(255,182,182,.08)";
+      } else {
+        statusDot.style.background = "rgba(255,255,255,.35)";
+        statusBadge.style.borderColor = "rgba(255,255,255,.14)";
+        statusBadge.style.background = "rgba(255,255,255,.04)";
+      }
+    }
+
+    function showFileMeta(name, info){
+      fileMeta.style.display = "flex";
+      fileNameEl.textContent = name || "—";
+      fileInfoEl.textContent = info || "—";
+      invoiceIdText.textContent = currentInvoiceId || "—";
+    }
+
+    function enableSend(enabled){
+      btnSend.disabled = !enabled;
+    }
+
+    function clearSelection(){
+      selectedFile = null;
+      selectedBlob = null;
+      selectedFileName = null;
+      fileInput.value = "";
+      imgPreview.style.display = "none";
+      imgPreview.src = "";
+      imgPlaceholder.style.display = "block";
+      fileMeta.style.display = "none";
+      enableSend(false);
+      currentInvoiceId = null;
+      closeSSE();
+      addLog("Selección limpiada.");
+      setStatus("idle","Sin iniciar",0);
+      setConn(true,"Listo");
+    }
+
+    // File choose
+    btnChoose.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => {
+      if (!e.target.files || !e.target.files[0]) return;
+      handleSelectedFile(e.target.files[0]);
+    });
+
+    // Drag & drop
+    dropZone.addEventListener("dragover", (e)=> {
+      e.preventDefault();
+      dropZone.style.background = "rgba(255,255,255,0.05)";
+    });
+    dropZone.addEventListener("dragleave", ()=> {
+      dropZone.style.background = "rgba(0,0,0,.12)";
+    });
+    dropZone.addEventListener("drop", (e)=> {
+      e.preventDefault();
+      dropZone.style.background = "rgba(0,0,0,.12)";
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) handleSelectedFile(f);
+    });
+
+    function handleSelectedFile(f){
+      // Accept PDF or image
+      const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
+      const isImg = (f.type || "").startsWith("image/");
+      if (!isPdf && !isImg){
+        toastShow("Archivo no soportado", "Sube un PDF o una imagen (JPG/PNG).");
+        return;
+      }
+
+      currentInvoiceId = uuidv4();
+      selectedFile = f;
+      selectedBlob = null;
+      selectedFileName = f.name;
+
+      showFileMeta(f.name, `${isPdf ? "PDF" : "Imagen"} • ${humanSize(f.size)}`);
+      enableSend(true);
+
+      if (isImg){
+        const url = URL.createObjectURL(f);
+        imgPreview.src = url;
+        imgPreview.style.display = "block";
+        imgPlaceholder.style.display = "none";
+      } else {
+        imgPreview.style.display = "none";
+        imgPreview.src = "";
+        imgPlaceholder.style.display = "block";
+      }
+
+      addLog(`Archivo seleccionado: ${f.name}`);
+      setStatus("warn","Listo para enviar",10);
+    }
+
+    // Camera
+    btnCamera.addEventListener("click", async () => {
+      try{
+        await openCamera();
+      }catch(err){
+        toastShow("No se pudo abrir la cámara", String(err?.message || err));
+      }
+    });
+
+    async function openCamera(){
+      if (!navigator.mediaDevices?.getUserMedia){
+        toastShow("Cámara no disponible", "Tu navegador no soporta getUserMedia.");
+        return;
+      }
+
+      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+
+      video.srcObject = camStream;
+      video.style.display = "block";
+      camPlaceholder.style.display = "none";
+      camControls.style.display = "flex";
+      addLog("Cámara abierta. Presiona Capturar.");
+    }
+
+    function stopCamera(){
+      if (camStream){
+        camStream.getTracks().forEach(t => t.stop());
+        camStream = null;
+      }
+      video.srcObject = null;
+      video.style.display = "none";
+      camControls.style.display = "none";
+      camPlaceholder.style.display = "block";
+      addLog("Cámara cerrada.");
+    }
+
+    btnStopCam.addEventListener("click", stopCamera);
+
+    btnSnap.addEventListener("click", () => {
+      if (!video.videoWidth) return;
+
+      const w = video.videoWidth;
+      const h = video.videoHeight;
+      canvas.width = w;
+      canvas.height = h;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, w, h);
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+
+        currentInvoiceId = uuidv4();
+        selectedBlob = blob;
+        selectedFile = null;
+
+        selectedFileName = `invoice_${currentInvoiceId}.jpg`;
+        showFileMeta(selectedFileName, `Foto • ${humanSize(blob.size)}`);
+        enableSend(true);
+
+        // Preview captured image
+        const url = URL.createObjectURL(blob);
+        imgPreview.src = url;
+        imgPreview.style.display = "block";
+        imgPlaceholder.style.display = "none";
+
+        addLog("Foto capturada y lista para enviar.");
+        setStatus("warn","Listo para enviar",10);
+        stopCamera();
+      }, "image/jpeg", 0.92);
+    });
+
+    // Reset
+    btnReset.addEventListener("click", () => {
+      clearSelection();
+      stopCamera();
+    });
+
+    // Send to n8n
+    btnSend.addEventListener("click", async () => {
+      try{
+        if (!CONFIG.N8N_START_WEBHOOK_URL || CONFIG.N8N_START_WEBHOOK_URL.includes("PASTE_")){
+          toastShow("Falta configurar", "Edita CONFIG.N8N_START_WEBHOOK_URL con tu Webhook de n8n.");
+          return;
+        }
+        if (!currentInvoiceId){
+          toastShow("Falta factura", "Selecciona un archivo o toma una foto.");
+          return;
+        }
+
+        enableSend(false);
+        setConn(true, "Enviando…");
+        setStatus("warn","Enviando factura…",15);
+        addLog("Enviando al workflow de n8n…");
+
+        const form = new FormData();
+        form.append("invoiceId", currentInvoiceId);
+        form.append("source", selectedBlob ? "camera" : "file");
+        form.append("client", "Yehuda Levy Frontend");
+        // Adjuntar archivo
+        if (selectedFile){
+          form.append("file", selectedFile, selectedFile.name);
+        } else if (selectedBlob){
+          form.append("file", selectedBlob, selectedFileName);
+        }
+
+        // 1) Dispara el workflow
+        const res = await fetch(CONFIG.N8N_START_WEBHOOK_URL, {
+          method: "POST",
+          body: form
+        });
+
+        if (!res.ok){
+          const text = await safeReadText(res);
+          throw new Error(`n8n respondió ${res.status}. ${text || ""}`.trim());
+        }
+
+        setConn(true, "Enviado");
+        setStatus("warn","Procesando…",25);
+        addLog("Workflow iniciado. Esperando progreso…");
+
+        // 2) Conectar SSE (si ya existe)
+        if (CONFIG.SSE_URL && !CONFIG.SSE_URL.includes("PASTE_")){
+          openSSE(currentInvoiceId);
+        } else {
+          addLog("SSE no configurado todavía. (Se mostrará progreso cuando lo conectemos)");
+          toastShow("Enviado", "El workflow inició. Aún falta conectar SSE para ver progreso en vivo.");
+        }
+
+      }catch(err){
+        enableSend(true);
+        setConn(false, "Error");
+        setStatus("bad","Error al enviar",0);
+        addLog(`Error: ${err?.message || err}`);
+        toastShow("Error", reminding(err?.message || String(err)));
+      }
+    });
+
+    async function safeReadText(res){
+      try { return await res.text(); } catch { return ""; }
+    }
+    function reminding(msg){
+      // mensaje corto para toast
+      if (msg.length > 160) return msg.slice(0, 160) + "…";
+      return msg;
+    }
+
+    // SSE
+    function openSSE(invoiceId){
+      closeSSE();
+
+      const url = new URL(CONFIG.SSE_URL);
+      url.searchParams.set("invoiceId", invoiceId);
+
+      addLog(`Conectando SSE: ${url.toString()}`);
+      setConn(true, "Conectando SSE…");
+
+      sse = new EventSource(url.toString(), { withCredentials: false });
+
+      sse.onopen = () => {
+        setConn(true, "SSE conectado");
+        addLog("SSE conectado. Recibiendo estados en tiempo real.");
+      };
+
+      sse.onerror = () => {
+        setConn(false, "SSE desconectado");
+        addLog("SSE desconectado o con error. (Esto es normal si aún no existe el endpoint)");
+        // No cerramos forzadamente: EventSource reintenta solo.
+      };
+
+      sse.onmessage = (evt) => {
+        // Esperamos JSON con:
+        // { invoiceId, status, message, progress }
+        try{
+          const data = JSON.parse(evt.data);
+
+          const st = String(data.status || "").toLowerCase();
+          const msg = data.message || "Actualización";
+          const prog = Number.isFinite(Number(data.progress)) ? Number(data.progress) : guessProgress(st);
+
+          addLog(`[${st || "status"}] ${msg}`);
+
+          if (st === "completed"){
+            setStatus("ok","Completado",100);
+            setConn(true,"Listo");
+            toastShow("Completado", "La factura fue procesada y guardada.");
+            closeSSE(); // opcional: cerrar al terminar
+          } else if (st === "error"){
+            setStatus("bad","Error",0);
+            setConn(false,"Error");
+            toastShow("Error", msg);
+            closeSSE();
+            enableSend(true);
+          } else {
+            setStatus("warn", prettyStatus(st), prog);
+            setConn(true,"Procesando");
+          }
+        }catch(e){
+          addLog("SSE: mensaje no-JSON recibido.");
+        }
+      };
+    }
+
+    function closeSSE(){
+      if (sse){
+        sse.close();
+        sse = null;
+        addLog("SSE cerrado.");
+      }
+    }
+
+    function prettyStatus(st){
+      const map = {
+        queued: "En cola…",
+        processing: "Procesando…",
+        ocr_done: "OCR completado",
+        analysis_done: "Análisis completado",
+        completed: "Completado",
+        error: "Error"
+      };
+      return map[st] || "Procesando…";
+    }
+
+    function guessProgress(st){
+      const map = {
+        queued: 20,
+        processing: 35,
+        ocr_done: 60,
+        analysis_done: 85,
+        completed: 100,
+        error: 0
+      };
+      return map[st] ?? 30;
+    }
+
+    // Start with a "ready" connection status
+    setConn(true, "Listo");
+  </script>
+</body>
+</html>
