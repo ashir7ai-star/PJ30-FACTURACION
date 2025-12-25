@@ -933,7 +933,7 @@
   <script>
     const CONFIG = {
       N8N_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
-      SHEETS_API_URL: "https://script.google.com/macros/s/AKfycbzBsHClxtaFIIzp241m4WjMG_yYoEnD-hAtAgNxYTan3NFuhBppZ8My58O42d8wLeup/exec",
+      SHEETS_API_URL: "https://script.google.com/macros/s/AKfycbwthxkwxiwmT1T11i4nINqhXydRGXx0D1rRh3HXia2w31_NClfvpx8feUQOtoyjlIxjTQ/exec",
       DRIVE_FOLDER_ID: "1KFxL4brbQThZnvqsn2XKzDLm7fg7NxGd"
     };
 
@@ -1046,8 +1046,10 @@
           body: formData
         });
 
+        console.log('Upload response status:', response.status);
+
         if (!response.ok) {
-          throw new Error('Upload failed');
+          throw new Error(`Server error: ${response.status}`);
         }
 
         updateProgressStep(1, 'complete');
@@ -1057,10 +1059,11 @@
         simulateProgress();
 
       } catch (error) {
+        console.error('Upload error:', error);
         showProgress(0, '');
         hideProgress();
         updateStatus('error');
-        showToast('Upload Failed', 'Please try again or contact support', 'error');
+        showToast('Upload Failed', 'There was an error processing your invoice. Please try again or contact support.', 'error');
       }
     }
 
@@ -1083,11 +1086,13 @@
         updateStatus('success');
         showToast('Success', 'Invoice processed and saved successfully', 'success');
         
+        // Esperar 3 segundos adicionales para que n8n termine de escribir
         setTimeout(() => {
           hideProgress();
+          console.log('Refreshing dashboard data...');
           loadDashboardMetrics();
           loadRecentInvoices();
-        }, 2000);
+        }, 3000);
       }, 4500);
     }
 
@@ -1155,25 +1160,45 @@
         const response = await fetch(`${CONFIG.SHEETS_API_URL}?action=metrics`);
         const data = await response.json();
 
+        console.log('Metrics Response:', data);
+
+        if (data.error) {
+          console.error('Metrics error:', data.error);
+          document.getElementById('totalInvoices').textContent = '0';
+          document.getElementById('totalAmount').textContent = '₪0';
+          document.getElementById('successRate').textContent = '0%';
+          document.getElementById('avgProcessing').textContent = '45s';
+          return;
+        }
+
         document.getElementById('totalInvoices').textContent = data.totalInvoices || '0';
         document.getElementById('totalAmount').textContent = data.totalAmount || '₪0';
         document.getElementById('successRate').textContent = data.successRate || '0%';
         document.getElementById('avgProcessing').textContent = data.avgProcessing || '45s';
       } catch (error) {
         console.error('Error loading metrics:', error);
-        document.getElementById('totalInvoices').textContent = 'Error';
-        document.getElementById('totalAmount').textContent = 'Error';
-        document.getElementById('successRate').textContent = 'Error';
-        document.getElementById('avgProcessing').textContent = 'Error';
+        document.getElementById('totalInvoices').textContent = '0';
+        document.getElementById('totalAmount').textContent = '₪0';
+        document.getElementById('successRate').textContent = '0%';
+        document.getElementById('avgProcessing').textContent = '45s';
       }
     }
 
     async function loadRecentInvoices() {
       try {
         const response = await fetch(`${CONFIG.SHEETS_API_URL}?action=recentInvoices`);
-        const invoices = await response.json();
+        const data = await response.json();
+
+        console.log('API Response:', data);
 
         const tableBody = document.getElementById('recentInvoicesTable');
+
+        if (data.error) {
+          tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Error: ${data.error}</td></tr>`;
+          return;
+        }
+
+        const invoices = Array.isArray(data) ? data : [];
 
         if (!invoices || invoices.length === 0) {
           tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No invoices found</td></tr>';
@@ -1229,4 +1254,3 @@
   </script>
 </body>
 </html>
-
