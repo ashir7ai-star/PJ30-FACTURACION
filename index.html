@@ -17,7 +17,7 @@
       box-sizing: border-box;
     }
 
-    :root {
+    [data-theme="light"] {
       --primary: #2563eb;
       --primary-dark: #1e40af;
       --primary-light: #3b82f6;
@@ -44,7 +44,38 @@
       --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #60a5fa;
       
+      --success: #10b981;
+      --success-light: #064e3b;
+      --warning: #f59e0b;
+      --warning-light: #78350f;
+      --error: #ef4444;
+      --error-light: #7f1d1d;
+      
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      
+      --border: #334155;
+      --border-light: #1e293b;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+    }
+
+    :root {
       --radius: 8px;
       --radius-lg: 12px;
     }
@@ -56,6 +87,7 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background 0.3s, color 0.3s;
     }
 
     .container {
@@ -64,7 +96,6 @@
       padding: 24px;
     }
 
-    /* Header */
     .header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -79,6 +110,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     .logo {
@@ -115,6 +148,25 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface-hover);
     }
 
     .status-indicator {
@@ -142,7 +194,6 @@
       50% { opacity: 0.5; }
     }
 
-    /* Grid Layout */
     .dashboard-grid {
       display: grid;
       gap: 24px;
@@ -167,7 +218,6 @@
       }
     }
 
-    /* Cards */
     .card {
       background: var(--surface);
       border-radius: var(--radius-lg);
@@ -195,7 +245,6 @@
       margin-top: 4px;
     }
 
-    /* Metric Cards */
     .metric-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
@@ -227,10 +276,15 @@
       font-size: 20px;
     }
 
-    .metric-icon.blue { background: #dbeafe; color: var(--primary); }
-    .metric-icon.green { background: #d1fae5; color: var(--success); }
-    .metric-icon.orange { background: #fed7aa; color: var(--warning); }
-    .metric-icon.purple { background: #e9d5ff; color: #9333ea; }
+    [data-theme="light"] .metric-icon.blue { background: #dbeafe; color: var(--primary); }
+    [data-theme="light"] .metric-icon.green { background: #d1fae5; color: var(--success); }
+    [data-theme="light"] .metric-icon.orange { background: #fed7aa; color: var(--warning); }
+    [data-theme="light"] .metric-icon.purple { background: #e9d5ff; color: #9333ea; }
+
+    [data-theme="dark"] .metric-icon.blue { background: #1e3a8a; color: #93c5fd; }
+    [data-theme="dark"] .metric-icon.green { background: #064e3b; color: #6ee7b7; }
+    [data-theme="dark"] .metric-icon.orange { background: #78350f; color: #fbbf24; }
+    [data-theme="dark"] .metric-icon.purple { background: #581c87; color: #c084fc; }
 
     .metric-info h3 {
       font-size: 13px;
@@ -258,7 +312,6 @@
     .metric-change.positive { color: var(--success); }
     .metric-change.negative { color: var(--error); }
 
-    /* Upload Section */
     .upload-area {
       border: 2px dashed var(--border);
       border-radius: var(--radius-lg);
@@ -271,12 +324,19 @@
 
     .upload-area:hover {
       border-color: var(--primary);
-      background: white;
+      background: var(--surface);
     }
 
     .upload-area.dragover {
       border-color: var(--primary);
+    }
+
+    [data-theme="light"] .upload-area.dragover {
       background: #eff6ff;
+    }
+
+    [data-theme="dark"] .upload-area.dragover {
+      background: #1e3a8a;
     }
 
     .upload-icon {
@@ -312,7 +372,6 @@
       flex-wrap: wrap;
     }
 
-    /* Buttons */
     .btn {
       padding: 10px 20px;
       border-radius: var(--radius);
@@ -352,13 +411,21 @@
       cursor: not-allowed;
     }
 
-    /* Progress */
     .progress-section {
       margin-top: 24px;
       padding: 20px;
-      background: #eff6ff;
       border-radius: var(--radius-lg);
-      border: 1px solid #bfdbfe;
+      border: 1px solid var(--border);
+    }
+
+    [data-theme="light"] .progress-section {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    [data-theme="dark"] .progress-section {
+      background: #1e3a8a;
+      border-color: #1e40af;
     }
 
     .progress-header {
@@ -383,7 +450,7 @@
     .progress-bar-container {
       width: 100%;
       height: 8px;
-      background: white;
+      background: var(--surface);
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 12px;
@@ -429,8 +496,13 @@
       font-size: 12px;
     }
 
-    .step-icon.pending {
+    [data-theme="light"] .step-icon.pending {
       background: #e2e8f0;
+      color: var(--text-muted);
+    }
+
+    [data-theme="dark"] .step-icon.pending {
+      background: #334155;
       color: var(--text-muted);
     }
 
@@ -444,7 +516,6 @@
       color: white;
     }
 
-    /* Recent Invoices Table */
     .table-container {
       overflow-x: auto;
     }
@@ -500,12 +571,11 @@
       color: var(--error);
     }
 
-    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: white;
+      background: var(--surface);
       padding: 16px 20px;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
@@ -575,13 +645,13 @@
       color: var(--text-muted);
       cursor: pointer;
       padding: 4px;
+      font-size: 18px;
     }
 
     input[type="file"] {
       display: none;
     }
 
-    /* Loading Spinner */
     .spinner {
       width: 16px;
       height: 16px;
@@ -594,11 +664,29 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    .btn-drive {
+      background: var(--primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-drive:hover {
+      background: var(--primary-dark);
+    }
   </style>
 </head>
 
-<body>
-  <!-- Header -->
+<body data-theme="light">
   <header class="header">
     <div class="header-content">
       <div class="logo">
@@ -609,6 +697,10 @@
         </div>
       </div>
       <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle">
+          <span id="themeIcon">🌙</span>
+          <span id="themeText">Dark Mode</span>
+        </button>
         <div class="status-indicator" id="connectionStatus">
           <span class="status-dot"></span>
           <span id="statusText">System Ready</span>
@@ -618,7 +710,6 @@
   </header>
 
   <div class="container">
-    <!-- Metrics Row -->
     <div class="metrics-row">
       <div class="metric-card">
         <div class="metric-header">
@@ -632,7 +723,7 @@
         <div class="metric-value" id="totalInvoices">-</div>
         <div class="metric-change positive">
           <span>↑</span>
-          <span>12% from last month</span>
+          <span>This month</span>
         </div>
       </div>
 
@@ -648,7 +739,7 @@
         <div class="metric-value" id="totalAmount">-</div>
         <div class="metric-change positive">
           <span>↑</span>
-          <span>8% from last month</span>
+          <span>All invoices</span>
         </div>
       </div>
 
@@ -664,7 +755,7 @@
         <div class="metric-value" id="successRate">-</div>
         <div class="metric-change positive">
           <span>↑</span>
-          <span>2% improvement</span>
+          <span>Processing accuracy</span>
         </div>
       </div>
 
@@ -680,14 +771,12 @@
         <div class="metric-value" id="avgProcessing">-</div>
         <div class="metric-change negative">
           <span>↓</span>
-          <span>15s faster</span>
+          <span>Fast processing</span>
         </div>
       </div>
     </div>
 
-    <!-- Main Content Grid -->
     <div class="main-content">
-      <!-- Upload Section -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -716,7 +805,6 @@
           </div>
         </div>
 
-        <!-- Progress Section (hidden by default) -->
         <div class="progress-section" id="progressSection" style="display: none;">
           <div class="progress-header">
             <span class="progress-title" id="progressTitle">Processing Invoice</span>
@@ -746,13 +834,16 @@
         </div>
       </div>
 
-      <!-- Recent Invoices -->
       <div class="card">
         <div class="card-header">
           <div>
             <h2 class="card-title">Recent Invoices</h2>
-            <p class="card-subtitle">Last 5 processed invoices</p>
+            <p class="card-subtitle">Last 10 processed invoices</p>
           </div>
+          <button class="btn-drive" id="btnViewDrive">
+            <span>📁</span>
+            <span>View All</span>
+          </button>
         </div>
         
         <div class="table-container">
@@ -778,7 +869,6 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
   <div class="toast" id="toast">
     <div class="toast-icon">✓</div>
     <div class="toast-content">
@@ -791,25 +881,51 @@
   <script>
     const CONFIG = {
       N8N_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
-      SSE_URL: "PASTE_YOUR_SSE_URL_HERE",
-      SHEETS_API_URL: "PASTE_YOUR_SHEETS_READ_API_HERE"
+      SHEETS_API_URL: "https://script.google.com/macros/s/AKfycbwthxkwxiwmT1T11i4nINqhXydRGXx0D1rRh3HXia2w31_NClfvpx8feUQOtoyjlIxjTQ/exec",
+      DRIVE_FOLDER_ID: "1KFxL4brbQThZnvqsn2XKzDLm7fg7NxGd"
     };
 
     let currentInvoiceId = null;
-    let sseConnection = null;
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
+      initializeTheme();
       initializeUI();
       loadDashboardMetrics();
       loadRecentInvoices();
     });
+
+    function initializeTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.body.setAttribute('data-theme', savedTheme);
+      updateThemeButton(savedTheme);
+
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeButton(newTheme);
+      });
+    }
+
+    function updateThemeButton(theme) {
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      if (theme === 'light') {
+        icon.textContent = '🌙';
+        text.textContent = 'Dark Mode';
+      } else {
+        icon.textContent = '☀️';
+        text.textContent = 'Light Mode';
+      }
+    }
 
     function initializeUI() {
       const dropZone = document.getElementById('dropZone');
       const fileInput = document.getElementById('fileInput');
       const btnChoose = document.getElementById('btnChoose');
       const btnCamera = document.getElementById('btnCamera');
+      const btnViewDrive = document.getElementById('btnViewDrive');
 
       btnChoose.addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', (e) => {
@@ -833,6 +949,10 @@
 
       btnCamera.addEventListener('click', () => {
         showToast('Info', 'Camera feature coming soon', 'info');
+      });
+
+      btnViewDrive.addEventListener('click', () => {
+        window.open(`https://drive.google.com/drive/folders/${CONFIG.DRIVE_FOLDER_ID}`, '_blank');
       });
 
       document.getElementById('toastClose').addEventListener('click', hideToast);
@@ -882,13 +1002,7 @@
         updateProgressStep(2, 'active');
         showProgress(50, 'Extracting invoice data...');
 
-        // Connect to SSE if configured
-        if (CONFIG.SSE_URL && !CONFIG.SSE_URL.includes('PASTE_')) {
-          connectSSE(currentInvoiceId);
-        } else {
-          // Simulate progress without SSE
-          simulateProgress();
-        }
+        simulateProgress();
 
       } catch (error) {
         showProgress(0, '');
@@ -923,53 +1037,6 @@
           loadRecentInvoices();
         }, 2000);
       }, 4500);
-    }
-
-    function connectSSE(invoiceId) {
-      const url = new URL(CONFIG.SSE_URL);
-      url.searchParams.set('invoiceId', invoiceId);
-
-      sseConnection = new EventSource(url.toString());
-
-      sseConnection.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          handleSSEMessage(data);
-        } catch (e) {
-          console.error('SSE parse error:', e);
-        }
-      };
-
-      sseConnection.onerror = () => {
-        sseConnection.close();
-        sseConnection = null;
-      };
-    }
-
-    function handleSSEMessage(data) {
-      const { status, message, progress } = data;
-
-      if (status === 'completed') {
-        updateProgressStep(4, 'complete');
-        showProgress(100, 'Invoice processed successfully!');
-        updateStatus('success');
-        showToast('Success', message || 'Invoice processed successfully', 'success');
-        
-        setTimeout(() => {
-          hideProgress();
-          loadDashboardMetrics();
-          loadRecentInvoices();
-        }, 2000);
-
-        if (sseConnection) sseConnection.close();
-      } else if (status === 'error') {
-        hideProgress();
-        updateStatus('error');
-        showToast('Processing Error', 'Please try again', 'error');
-        if (sseConnection) sseConnection.close();
-      } else {
-        showProgress(progress || 50, message || 'Processing...');
-      }
     }
 
     function showProgress(percent, title) {
@@ -1032,33 +1099,55 @@
     }
 
     async function loadDashboardMetrics() {
-      // Simulate loading metrics
-      // In production, fetch from Google Sheets API or backend
-      document.getElementById('totalInvoices').textContent = '847';
-      document.getElementById('totalAmount').textContent = '₪284,592';
-      document.getElementById('successRate').textContent = '98.5%';
-      document.getElementById('avgProcessing').textContent = '45s';
+      try {
+        const response = await fetch(`${CONFIG.SHEETS_API_URL}?action=metrics`);
+        const data = await response.json();
+
+        document.getElementById('totalInvoices').textContent = data.totalInvoices || '0';
+        document.getElementById('totalAmount').textContent = data.totalAmount || '₪0';
+        document.getElementById('successRate').textContent = data.successRate || '0%';
+        document.getElementById('avgProcessing').textContent = data.avgProcessing || '45s';
+      } catch (error) {
+        console.error('Error loading metrics:', error);
+        document.getElementById('totalInvoices').textContent = 'Error';
+        document.getElementById('totalAmount').textContent = 'Error';
+        document.getElementById('successRate').textContent = 'Error';
+        document.getElementById('avgProcessing').textContent = 'Error';
+      }
     }
 
     async function loadRecentInvoices() {
-      // Simulate loading recent invoices
-      // In production, fetch from Google Sheets API
-      const tableBody = document.getElementById('recentInvoicesTable');
-      
-      const sampleData = [
-        { vendor: 'דב וולף עבודות עפר', amount: '₪39,294', date: '25/12/2024', status: 'success' },
-        { vendor: 'עבודת אלומיניום וזכוכית', amount: '₪31,123', date: '24/12/2024', status: 'success' },
-        { vendor: 'מחפרים מזרחי', amount: '₪26,875', date: '23/12/2024', status: 'processing' },
-      ];
+      try {
+        const response = await fetch(`${CONFIG.SHEETS_API_URL}?action=recentInvoices`);
+        const invoices = await response.json();
 
-      tableBody.innerHTML = sampleData.map(invoice => `
-        <tr>
-          <td>${invoice.vendor}</td>
-          <td style="font-weight: 600;">${invoice.amount}</td>
-          <td>${invoice.date}</td>
-          <td><span class="badge ${invoice.status}">${invoice.status === 'success' ? 'Processed' : 'Processing'}</span></td>
-        </tr>
-      `).join('');
+        const tableBody = document.getElementById('recentInvoicesTable');
+
+        if (!invoices || invoices.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No invoices found</td></tr>';
+          return;
+        }
+
+        tableBody.innerHTML = invoices.map(invoice => {
+          const vendor = invoice.VENDOR_NAME || 'Unknown';
+          const amount = invoice.TOTAL_AMOUNT || '0';
+          const date = invoice.INVOICE_DATE || 'N/A';
+          const hasAmount = parseFloat(String(amount).replace(/[^0-9.-]/g, '')) > 0;
+
+          return `
+            <tr>
+              <td>${vendor}</td>
+              <td style="font-weight: 600;">₪${amount}</td>
+              <td>${date}</td>
+              <td><span class="badge ${hasAmount ? 'success' : 'processing'}">${hasAmount ? 'Processed' : 'Processing'}</span></td>
+            </tr>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Error loading invoices:', error);
+        document.getElementById('recentInvoicesTable').innerHTML = 
+          '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Error loading invoices</td></tr>';
+      }
     }
 
     function showToast(title, message, type = 'success') {
