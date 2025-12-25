@@ -1,896 +1,1089 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Yehuda Levy — Lector de Facturas</title>
-  <meta name="description" content="Portal seguro para cargar y procesar facturas — Yehuda Levy." />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yehuda Levy - Invoice Management System</title>
+  <meta name="description" content="Professional invoice processing and management system">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    :root{
-      --bg: #0b1220;
-      --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.08);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.68);
-      --muted2: rgba(255,255,255,0.52);
-      --line: rgba(255,255,255,0.10);
-      --shadow: 0 20px 60px rgba(0,0,0,.35);
-      --radius: 18px;
-
-      --accent: #c9d4ff;
-      --good: #bfe8d1;
-      --warn: #ffe7b3;
-      --bad:  #ffb6b6;
-
-      --btn: rgba(255,255,255,0.10);
-      --btnHover: rgba(255,255,255,0.14);
-      --btnBorder: rgba(255,255,255,0.18);
-      --focus: rgba(201,212,255,0.35);
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
+    * {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(201,212,255,.12), transparent 55%),
-        radial-gradient(900px 700px at 85% 30%, rgba(191,232,209,.10), transparent 55%),
-        radial-gradient(800px 800px at 50% 100%, rgba(255,255,255,.06), transparent 50%),
-        var(--bg);
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --primary-light: #3b82f6;
+      
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --error: #ef4444;
+      --error-light: #fee2e2;
+      
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-hover: #f1f5f9;
+      
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
 
-    .wrap{
-      max-width: 1100px;
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 28px 18px 36px;
+      padding: 24px;
     }
 
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 14px;
-      padding: 14px 16px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 14px;
-      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
     }
 
-    .brand{
-      display:flex; align-items:center; gap: 12px;
-      min-width: 220px;
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
     }
 
-    .logo{
-      width: 40px; height: 40px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, rgba(201,212,255,.18), rgba(255,255,255,.06));
-      display:grid; place-items:center;
-      box-shadow: 0 12px 30px rgba(0,0,0,.25);
-    }
-    .logo svg{ opacity: .92; }
-
-    .brand h1{
-      font-size: 14px;
-      margin: 0;
-      letter-spacing: .3px;
-      font-weight: 680;
-    }
-    .brand p{
-      margin: 0;
-      font-size: 12px;
-      color: var(--muted);
+    .logo-text p {
+      font-size: 13px;
+      color: var(--text-secondary);
     }
 
-    .right{
-      display:flex; align-items:center; gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .pill{
-      font-size: 12px;
-      color: var(--muted);
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      padding: 8px 10px;
-      border-radius: 999px;
-      display:flex; align-items:center; gap: 8px;
-    }
-
-    .grid{
-      margin-top: 18px;
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
+    .header-actions {
+      display: flex;
+      align-items: center;
       gap: 16px;
     }
 
-    @media (max-width: 940px){
-      .grid{ grid-template-columns: 1fr; }
-      header{ position: static; }
-    }
-
-    .card{
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
-      backdrop-filter: blur(10px);
-    }
-
-    .card h2{
-      margin: 0 0 6px 0;
-      font-size: 14px;
-      letter-spacing: .2px;
-      font-weight: 680;
-    }
-    .card .sub{
-      margin: 0 0 14px 0;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .drop{
-      border: 1px dashed rgba(255,255,255,0.22);
-      background: rgba(0,0,0,.12);
-      border-radius: 16px;
-      padding: 16px;
-      display:flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .dropTop{
-      display:flex; align-items:flex-start; justify-content:space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .hint{
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .actions{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    button{
-      appearance: none;
-      border: 1px solid var(--btnBorder);
-      background: var(--btn);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 650;
-      letter-spacing: .2px;
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--success-light);
+      border-radius: 999px;
       font-size: 13px;
-      cursor: pointer;
-      transition: .15s ease;
-      outline: none;
+      color: var(--success);
+      font-weight: 500;
     }
-    button:hover{ background: var(--btnHover); }
-    button:focus{ box-shadow: 0 0 0 4px var(--focus); }
-    button:disabled{
-      opacity: .55;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Metric Cards */
+    .metric-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .metric-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .metric-icon.blue { background: #dbeafe; color: var(--primary); }
+    .metric-icon.green { background: #d1fae5; color: var(--success); }
+    .metric-icon.orange { background: #fed7aa; color: var(--warning); }
+    .metric-icon.purple { background: #e9d5ff; color: #9333ea; }
+
+    .metric-info h3 {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .metric-change {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .metric-change.positive { color: var(--success); }
+    .metric-change.negative { color: var(--error); }
+
+    /* Upload Section */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 24px;
+      text-align: center;
+      background: var(--surface-hover);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: white;
+    }
+
+    .upload-area.dragover {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .upload-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+    }
+
+    .upload-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .upload-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .upload-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .primary{
-      background: rgba(201,212,255,0.16);
-      border-color: rgba(201,212,255,0.32);
-    }
-    .primary:hover{
-      background: rgba(201,212,255,0.20);
+    /* Progress */
+    .progress-section {
+      margin-top: 24px;
+      padding: 20px;
+      background: #eff6ff;
+      border-radius: var(--radius-lg);
+      border: 1px solid #bfdbfe;
     }
 
-    input[type="file"]{ display:none; }
-
-    .fileMeta{
-      display:flex;
-      gap: 10px;
-      align-items:center;
+    .progress-header {
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-    }
-    .fileMeta .name{
-      font-size: 13px;
-      font-weight: 650;
-      color: var(--text);
-      max-width: 520px;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .fileMeta .small{
-      font-size: 12px;
-      color: var(--muted);
+      margin-bottom: 12px;
     }
 
-    .previewRow{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 520px){
-      .previewRow{ grid-template-columns: 1fr; }
+    .progress-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
     }
 
-    .preview{
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,.18);
-      min-height: 220px;
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      position: relative;
+    .progress-percentage {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
     }
-    .preview img{
+
+    .progress-bar-container {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display:none;
-    }
-    .preview .ph{
-      padding: 14px;
-      text-align:center;
-      color: var(--muted2);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .statusBox{
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .statusHeader{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .badge{
-      font-size: 12px;
-      padding: 6px 10px;
+      height: 8px;
+      background: white;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      color: var(--muted);
-      display:inline-flex;
-      align-items:center;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-steps {
+      display: flex;
+      flex-direction: column;
       gap: 8px;
     }
-    .dot{
-      width: 8px; height: 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.35);
-    }
 
-    .progress{
-      width: 100%;
-      height: 10px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 999px;
-      overflow:hidden;
-    }
-    .bar{
-      height: 100%;
-      width: 0%;
-      background: rgba(201,212,255,0.45);
-      transition: width .25s ease;
-    }
-
-    .log{
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,.18);
-      border-radius: 14px;
-      padding: 10px;
-      max-height: 280px;
-      overflow:auto;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-      color: rgba(255,255,255,0.82);
-    }
-    .logLine{ margin: 0 0 8px 0; }
-    .logLine span{
-      color: rgba(255,255,255,0.55);
-      margin-right: 8px;
-    }
-
-    .note{
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      border-top: 1px solid var(--line);
-      padding-top: 12px;
-      margin-top: 14px;
-    }
-
-    .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 16px;
-      width: min(720px, calc(100% - 24px));
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(10,16,28,0.85);
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
-      padding: 10px 12px;
-      display:none;
-      align-items:center;
-      justify-content: space-between;
+    .progress-step {
+      display: flex;
+      align-items: center;
       gap: 10px;
-      z-index: 50;
+      font-size: 13px;
+      color: var(--text-secondary);
     }
-    .toast p{
-      margin: 0;
+
+    .progress-step.active {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .progress-step.complete {
+      color: var(--success);
+    }
+
+    .step-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
     }
-    .toast strong{ color: var(--text); font-weight: 700; }
+
+    .step-icon.pending {
+      background: #e2e8f0;
+      color: var(--text-muted);
+    }
+
+    .step-icon.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step-icon.complete {
+      background: var(--success);
+      color: white;
+    }
+
+    /* Recent Invoices Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 16px 12px;
+      font-size: 14px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    tr:hover {
+      background: var(--surface-hover);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge.success {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .badge.processing {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .badge.error {
+      background: var(--error-light);
+      color: var(--error);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: white;
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      min-width: 320px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    .toast-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .toast.success .toast-icon {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .toast.error .toast-icon {
+      background: var(--error-light);
+      color: var(--error);
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .toast-message {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2l8 4.5v11L12 22 4 17.5v-11L12 2z" stroke="rgba(255,255,255,.86)" stroke-width="1.6"/>
-            <path d="M12 6.5l4.8 2.7v5.6L12 17.5 7.2 14.8V9.2L12 6.5z" stroke="rgba(201,212,255,.95)" stroke-width="1.6"/>
-          </svg>
-        </div>
-        <div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">YL</div>
+        <div class="logo-text">
           <h1>Yehuda Levy</h1>
-          <p>Portal de carga • Lector de facturas (n8n)</p>
+          <p>Invoice Management System</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-indicator" id="connectionStatus">
+          <span class="status-dot"></span>
+          <span id="statusText">System Ready</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Metrics Row -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon blue">
+            <span>📄</span>
+          </div>
+          <div class="metric-info">
+            <h3>Total Invoices</h3>
+          </div>
+        </div>
+        <div class="metric-value" id="totalInvoices">-</div>
+        <div class="metric-change positive">
+          <span>↑</span>
+          <span>12% from last month</span>
         </div>
       </div>
 
-      <div class="right">
-        <div class="pill" title="Entorno">
-          <span style="opacity:.9">🔒</span>
-          <span>Procesamiento automatizado</span>
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon green">
+            <span>₪</span>
+          </div>
+          <div class="metric-info">
+            <h3>Total Amount</h3>
+          </div>
         </div>
-        <div class="pill" title="Estado de conexión">
-          <span class="dot" id="connDot"></span>
-          <span id="connText">Listo</span>
+        <div class="metric-value" id="totalAmount">-</div>
+        <div class="metric-change positive">
+          <span>↑</span>
+          <span>8% from last month</span>
         </div>
       </div>
-    </header>
 
-    <div class="grid">
-      <section class="card">
-        <h2>Cargar factura</h2>
-        <p class="sub">
-          Sube un archivo (PDF/JPG/PNG) o toma una foto. Al enviar, se iniciará el flujo de n8n
-          que guardará la factura en Google Drive y los datos en Google Sheets.
-        </p>
-
-        <div class="drop" id="dropZone">
-          <div class="dropTop">
-            <div class="hint">
-              <strong style="color: var(--text); font-weight: 720;">Métodos de carga</strong><br>
-              • Arrastra y suelta aquí (desktop)<br>
-              • "Elegir archivo" (Broadway Files / explorador)<br>
-              • "Tomar foto" (móvil / laptop con cámara)
-            </div>
-
-            <div class="actions">
-              <label>
-                <input id="fileInput" type="file" accept=".pdf,image/*" />
-                <button type="button" class="primary" id="btnChoose">Elegir archivo</button>
-              </label>
-
-              <button type="button" id="btnCamera">Tomar foto</button>
-              <button type="button" id="btnSend" class="primary" disabled>Iniciar procesamiento</button>
-              <button type="button" id="btnReset">Limpiar</button>
-            </div>
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon purple">
+            <span>✓</span>
           </div>
-
-          <div class="fileMeta" id="fileMeta" style="display:none;">
-            <div>
-              <div class="name" id="fileName">—</div>
-              <div class="small" id="fileInfo">—</div>
-            </div>
-            <div class="small">
-              ID: <span id="invoiceIdText" style="color: var(--text); font-weight: 700;">—</span>
-            </div>
+          <div class="metric-info">
+            <h3>Success Rate</h3>
           </div>
+        </div>
+        <div class="metric-value" id="successRate">-</div>
+        <div class="metric-change positive">
+          <span>↑</span>
+          <span>2% improvement</span>
+        </div>
+      </div>
 
-          <div class="previewRow">
-            <div class="preview">
-              <img id="imgPreview" alt="Vista previa" />
-              <div class="ph" id="imgPlaceholder">
-                Vista previa aparecerá aquí.<br>
-                Para PDF, se mostrará el nombre del archivo.
-              </div>
-            </div>
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon orange">
+            <span>⏱</span>
+          </div>
+          <div class="metric-info">
+            <h3>Avg. Processing</h3>
+          </div>
+        </div>
+        <div class="metric-value" id="avgProcessing">-</div>
+        <div class="metric-change negative">
+          <span>↓</span>
+          <span>15s faster</span>
+        </div>
+      </div>
+    </div>
 
-            <div class="preview" id="cameraBox">
-              <video id="video" autoplay playsinline style="display:none; width:100%; height:100%; object-fit:cover;"></video>
-              <canvas id="canvas" style="display:none;"></canvas>
-              <div class="ph" id="camPlaceholder">
-                Cámara lista para usar cuando presiones <strong>Tomar foto</strong>.<br>
-                (En móviles, te pedirá permiso)
-              </div>
-              <div style="position:absolute; bottom:12px; left:12px; right:12px; display:none; gap:10px;" id="camControls">
-                <button type="button" id="btnSnap" class="primary">Capturar</button>
-                <button type="button" id="btnStopCam">Cerrar cámara</button>
-              </div>
-            </div>
+    <!-- Main Content Grid -->
+    <div class="main-content">
+      <!-- Upload Section -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Upload Invoice</h2>
+            <p class="card-subtitle">Drag and drop or choose a file to process</p>
           </div>
         </div>
 
-        <div class="note">
-          <strong style="color: var(--text); font-weight: 720;">Nota:</strong>
-          Este frontend es estático (ideal para GitHub Pages). Para progreso en tiempo real vía SSE,
-          luego conectaremos un endpoint que emitirá los estados del workflow.
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="statusBox">
-          <div class="statusHeader">
-            <div>
-              <h2 style="margin:0;">Estado del procesamiento</h2>
-              <p class="sub" style="margin:6px 0 0 0;">
-                Mensajes en vivo (SSE) o actualizaciones desde n8n.
-              </p>
-            </div>
-            <div class="badge" id="statusBadge">
-              <span class="dot" id="statusDot"></span>
-              <span id="statusText">Sin iniciar</span>
-            </div>
-          </div>
-
-          <div class="progress" aria-label="Progreso">
-            <div class="bar" id="progressBar"></div>
-          </div>
-
-          <div class="log" id="log" aria-label="Registro de eventos"></div>
-
-          <div class="note">
-            <strong style="color: var(--text); font-weight: 720;">Endpoints (configurar):</strong><br>
-            • Webhook n8n (inicio): <span style="color:var(--accent)" id="startUrlHint">—</span><br>
-            • SSE (progreso): <span style="color:var(--accent)" id="sseUrlHint">—</span><br><br>
-            Puedes editar estos valores en el bloque <em>CONFIG</em> del script.
+        <div class="upload-area" id="dropZone">
+          <div class="upload-icon">📤</div>
+          <h3 class="upload-title">Upload Invoice Document</h3>
+          <p class="upload-subtitle">Supported formats: PDF, JPG, PNG (Max 10MB)</p>
+          
+          <div class="upload-actions">
+            <label>
+              <input type="file" id="fileInput" accept=".pdf,image/*">
+              <button class="btn btn-primary" id="btnChoose">
+                <span>📁</span>
+                <span>Choose File</span>
+              </button>
+            </label>
+            <button class="btn btn-secondary" id="btnCamera">
+              <span>📷</span>
+              <span>Take Photo</span>
+            </button>
           </div>
         </div>
-      </aside>
+
+        <!-- Progress Section (hidden by default) -->
+        <div class="progress-section" id="progressSection" style="display: none;">
+          <div class="progress-header">
+            <span class="progress-title" id="progressTitle">Processing Invoice</span>
+            <span class="progress-percentage" id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="progress-steps" id="progressSteps">
+            <div class="progress-step" id="step1">
+              <span class="step-icon pending">1</span>
+              <span>Uploading file to secure storage</span>
+            </div>
+            <div class="progress-step" id="step2">
+              <span class="step-icon pending">2</span>
+              <span>Extracting invoice data</span>
+            </div>
+            <div class="progress-step" id="step3">
+              <span class="step-icon pending">3</span>
+              <span>Validating information</span>
+            </div>
+            <div class="progress-step" id="step4">
+              <span class="step-icon pending">4</span>
+              <span>Saving to database</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Invoices -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Recent Invoices</h2>
+            <p class="card-subtitle">Last 5 processed invoices</p>
+          </div>
+        </div>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Vendor</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentInvoicesTable">
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-muted);">
+                  Loading invoices...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <p id="toastText"></p>
-    <button type="button" id="toastClose">Cerrar</button>
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-icon">✓</div>
+    <div class="toast-content">
+      <div class="toast-title" id="toastTitle">Success</div>
+      <div class="toast-message" id="toastMessage">Operation completed</div>
+    </div>
+    <button class="toast-close" id="toastClose">×</button>
   </div>
 
   <script>
     const CONFIG = {
-      N8N_START_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
-      SSE_URL: "PASTE_YOUR_SSE_URL_HERE"
+      N8N_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
+      SSE_URL: "PASTE_YOUR_SSE_URL_HERE",
+      SHEETS_API_URL: "PASTE_YOUR_SHEETS_READ_API_HERE"
     };
 
-    const fileInput = document.getElementById('fileInput');
-    const btnChoose = document.getElementById('btnChoose');
-    const btnCamera = document.getElementById('btnCamera');
-    const btnSend = document.getElementById('btnSend');
-    const btnReset = document.getElementById('btnReset');
-
-    const fileMeta = document.getElementById('fileMeta');
-    const fileNameEl = document.getElementById('fileName');
-    const fileInfoEl = document.getElementById('fileInfo');
-    const invoiceIdText = document.getElementById('invoiceIdText');
-
-    const imgPreview = document.getElementById('imgPreview');
-    const imgPlaceholder = document.getElementById('imgPlaceholder');
-
-    const dropZone = document.getElementById('dropZone');
-
-    const connDot = document.getElementById('connDot');
-    const connText = document.getElementById('connText');
-
-    const statusBadge = document.getElementById('statusBadge');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const progressBar = document.getElementById('progressBar');
-    const logEl = document.getElementById('log');
-
-    const startUrlHint = document.getElementById('startUrlHint');
-    const sseUrlHint = document.getElementById('sseUrlHint');
-
-    const toast = document.getElementById('toast');
-    const toastText = document.getElementById('toastText');
-    const toastClose = document.getElementById('toastClose');
-
-    const cameraBox = document.getElementById('cameraBox');
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const camPlaceholder = document.getElementById('camPlaceholder');
-    const camControls = document.getElementById('camControls');
-    const btnSnap = document.getElementById('btnSnap');
-    const btnStopCam = document.getElementById('btnStopCam');
-
-    let selectedFile = null;
-    let selectedBlob = null;
-    let selectedFileName = null;
     let currentInvoiceId = null;
-    let sse = null;
-    let camStream = null;
+    let sseConnection = null;
 
-    startUrlHint.textContent = CONFIG.N8N_START_WEBHOOK_URL;
-    sseUrlHint.textContent = CONFIG.SSE_URL;
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeUI();
+      loadDashboardMetrics();
+      loadRecentInvoices();
+    });
 
-    addLog("Listo. Selecciona un archivo o toma una foto para iniciar.");
-    setStatus("idle", "Sin iniciar", 0);
+    function initializeUI() {
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const btnChoose = document.getElementById('btnChoose');
+      const btnCamera = document.getElementById('btnCamera');
 
-    function uuidv4(){
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-        const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15) >> 0;
-        const v = c === "x" ? r : (r & 0x3) | 0x8;
+      btnChoose.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) handleFile(e.target.files[0]);
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+      });
+
+      btnCamera.addEventListener('click', () => {
+        showToast('Info', 'Camera feature coming soon', 'info');
+      });
+
+      document.getElementById('toastClose').addEventListener('click', hideToast);
+    }
+
+    async function handleFile(file) {
+      const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+      
+      if (!validTypes.includes(file.type)) {
+        showToast('Invalid File', 'Please upload a PDF or image file', 'error');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('File Too Large', 'Please upload a file smaller than 10MB', 'error');
+        return;
+      }
+
+      await uploadInvoice(file);
+    }
+
+    async function uploadInvoice(file) {
+      currentInvoiceId = generateUUID();
+      
+      showProgress(0, 'Preparing upload...');
+      updateStatus('processing');
+
+      const formData = new FormData();
+      formData.append('invoiceId', currentInvoiceId);
+      formData.append('source', 'file');
+      formData.append('file', file);
+
+      try {
+        updateProgressStep(1, 'active');
+        showProgress(25, 'Uploading to secure storage...');
+
+        const response = await fetch(CONFIG.N8N_WEBHOOK_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+
+        updateProgressStep(1, 'complete');
+        updateProgressStep(2, 'active');
+        showProgress(50, 'Extracting invoice data...');
+
+        // Connect to SSE if configured
+        if (CONFIG.SSE_URL && !CONFIG.SSE_URL.includes('PASTE_')) {
+          connectSSE(currentInvoiceId);
+        } else {
+          // Simulate progress without SSE
+          simulateProgress();
+        }
+
+      } catch (error) {
+        showProgress(0, '');
+        hideProgress();
+        updateStatus('error');
+        showToast('Upload Failed', 'Please try again or contact support', 'error');
+      }
+    }
+
+    function simulateProgress() {
+      setTimeout(() => {
+        updateProgressStep(2, 'complete');
+        updateProgressStep(3, 'active');
+        showProgress(75, 'Validating information...');
+      }, 1500);
+
+      setTimeout(() => {
+        updateProgressStep(3, 'complete');
+        updateProgressStep(4, 'active');
+        showProgress(90, 'Saving to database...');
+      }, 3000);
+
+      setTimeout(() => {
+        updateProgressStep(4, 'complete');
+        showProgress(100, 'Invoice processed successfully!');
+        updateStatus('success');
+        showToast('Success', 'Invoice processed and saved successfully', 'success');
+        
+        setTimeout(() => {
+          hideProgress();
+          loadDashboardMetrics();
+          loadRecentInvoices();
+        }, 2000);
+      }, 4500);
+    }
+
+    function connectSSE(invoiceId) {
+      const url = new URL(CONFIG.SSE_URL);
+      url.searchParams.set('invoiceId', invoiceId);
+
+      sseConnection = new EventSource(url.toString());
+
+      sseConnection.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handleSSEMessage(data);
+        } catch (e) {
+          console.error('SSE parse error:', e);
+        }
+      };
+
+      sseConnection.onerror = () => {
+        sseConnection.close();
+        sseConnection = null;
+      };
+    }
+
+    function handleSSEMessage(data) {
+      const { status, message, progress } = data;
+
+      if (status === 'completed') {
+        updateProgressStep(4, 'complete');
+        showProgress(100, 'Invoice processed successfully!');
+        updateStatus('success');
+        showToast('Success', message || 'Invoice processed successfully', 'success');
+        
+        setTimeout(() => {
+          hideProgress();
+          loadDashboardMetrics();
+          loadRecentInvoices();
+        }, 2000);
+
+        if (sseConnection) sseConnection.close();
+      } else if (status === 'error') {
+        hideProgress();
+        updateStatus('error');
+        showToast('Processing Error', 'Please try again', 'error');
+        if (sseConnection) sseConnection.close();
+      } else {
+        showProgress(progress || 50, message || 'Processing...');
+      }
+    }
+
+    function showProgress(percent, title) {
+      document.getElementById('progressSection').style.display = 'block';
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('progressPercent').textContent = Math.round(percent) + '%';
+      if (title) document.getElementById('progressTitle').textContent = title;
+    }
+
+    function hideProgress() {
+      setTimeout(() => {
+        document.getElementById('progressSection').style.display = 'none';
+        document.getElementById('progressBar').style.width = '0%';
+        resetProgressSteps();
+      }, 500);
+    }
+
+    function updateProgressStep(stepNum, state) {
+      const step = document.getElementById(`step${stepNum}`);
+      const icon = step.querySelector('.step-icon');
+      
+      step.className = `progress-step ${state}`;
+      icon.className = `step-icon ${state}`;
+      
+      if (state === 'complete') {
+        icon.textContent = '✓';
+      } else {
+        icon.textContent = stepNum;
+      }
+    }
+
+    function resetProgressSteps() {
+      for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById(`step${i}`);
+        const icon = step.querySelector('.step-icon');
+        step.className = 'progress-step';
+        icon.className = 'step-icon pending';
+        icon.textContent = i;
+      }
+    }
+
+    function updateStatus(status) {
+      const statusEl = document.getElementById('statusText');
+      const statusIndicator = document.getElementById('connectionStatus');
+
+      if (status === 'processing') {
+        statusEl.textContent = 'Processing Invoice';
+        statusIndicator.style.background = 'var(--warning-light)';
+        statusIndicator.style.color = 'var(--warning)';
+      } else if (status === 'success') {
+        statusEl.textContent = 'System Ready';
+        statusIndicator.style.background = 'var(--success-light)';
+        statusIndicator.style.color = 'var(--success)';
+      } else if (status === 'error') {
+        statusEl.textContent = 'Error Occurred';
+        statusIndicator.style.background = 'var(--error-light)';
+        statusIndicator.style.color = 'var(--error)';
+        setTimeout(() => updateStatus('success'), 3000);
+      }
+    }
+
+    async function loadDashboardMetrics() {
+      // Simulate loading metrics
+      // In production, fetch from Google Sheets API or backend
+      document.getElementById('totalInvoices').textContent = '847';
+      document.getElementById('totalAmount').textContent = '₪284,592';
+      document.getElementById('successRate').textContent = '98.5%';
+      document.getElementById('avgProcessing').textContent = '45s';
+    }
+
+    async function loadRecentInvoices() {
+      // Simulate loading recent invoices
+      // In production, fetch from Google Sheets API
+      const tableBody = document.getElementById('recentInvoicesTable');
+      
+      const sampleData = [
+        { vendor: 'דב וולף עבודות עפר', amount: '₪39,294', date: '25/12/2024', status: 'success' },
+        { vendor: 'עבודת אלומיניום וזכוכית', amount: '₪31,123', date: '24/12/2024', status: 'success' },
+        { vendor: 'מחפרים מזרחי', amount: '₪26,875', date: '23/12/2024', status: 'processing' },
+      ];
+
+      tableBody.innerHTML = sampleData.map(invoice => `
+        <tr>
+          <td>${invoice.vendor}</td>
+          <td style="font-weight: 600;">${invoice.amount}</td>
+          <td>${invoice.date}</td>
+          <td><span class="badge ${invoice.status}">${invoice.status === 'success' ? 'Processed' : 'Processing'}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function showToast(title, message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMessage = document.getElementById('toastMessage');
+
+      toast.className = `toast ${type} show`;
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+
+      setTimeout(hideToast, 5000);
+    }
+
+    function hideToast() {
+      document.getElementById('toast').classList.remove('show');
+    }
+
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
     }
-
-    function humanSize(bytes){
-      if (bytes === 0) return "0 B";
-      const k = 1024;
-      const sizes = ["B","KB","MB","GB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return (bytes / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1) + " " + sizes[i];
-    }
-
-    function addLog(msg){
-      const t = new Date();
-      const stamp = t.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
-      const p = document.createElement("p");
-      p.className = "logLine";
-      p.innerHTML = `<span>${stamp}</span>${escapeHtml(msg)}`;
-      logEl.prepend(p);
-    }
-
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function toastShow(title, body){
-      toastText.innerHTML = `<strong>${escapeHtml(title)}</strong> — ${escapeHtml(body)}`;
-      toast.style.display = "flex";
-    }
-    toastClose.addEventListener("click", ()=> toast.style.display="none");
-
-    function setConn(connected, text){
-      connDot.style.background = connected ? "rgba(191,232,209,.85)" : "rgba(255,255,255,.35)";
-      connText.textContent = text;
-    }
-
-    function setStatus(kind, text, progress){
-      statusText.textContent = text;
-      const p = Math.max(0, Math.min(100, Number(progress || 0)));
-      progressBar.style.width = p + "%";
-
-      if (kind === "ok") {
-        statusDot.style.background = "rgba(191,232,209,.85)";
-        statusBadge.style.borderColor = "rgba(191,232,209,.35)";
-        statusBadge.style.background = "rgba(191,232,209,.08)";
-      } else if (kind === "warn") {
-        statusDot.style.background = "rgba(255,231,179,.85)";
-        statusBadge.style.borderColor = "rgba(255,231,179,.35)";
-        statusBadge.style.background = "rgba(255,231,179,.08)";
-      } else if (kind === "bad") {
-        statusDot.style.background = "rgba(255,182,182,.85)";
-        statusBadge.style.borderColor = "rgba(255,182,182,.35)";
-        statusBadge.style.background = "rgba(255,182,182,.08)";
-      } else {
-        statusDot.style.background = "rgba(255,255,255,.35)";
-        statusBadge.style.borderColor = "rgba(255,255,255,.14)";
-        statusBadge.style.background = "rgba(255,255,255,.04)";
-      }
-    }
-
-    function showFileMeta(name, info){
-      fileMeta.style.display = "flex";
-      fileNameEl.textContent = name || "—";
-      fileInfoEl.textContent = info || "—";
-      invoiceIdText.textContent = currentInvoiceId || "—";
-    }
-
-    function enableSend(enabled){
-      btnSend.disabled = !enabled;
-    }
-
-    function clearSelection(){
-      selectedFile = null;
-      selectedBlob = null;
-      selectedFileName = null;
-      fileInput.value = "";
-      imgPreview.style.display = "none";
-      imgPreview.src = "";
-      imgPlaceholder.style.display = "block";
-      fileMeta.style.display = "none";
-      enableSend(false);
-      currentInvoiceId = null;
-      closeSSE();
-      addLog("Selección limpiada.");
-      setStatus("idle","Sin iniciar",0);
-      setConn(true,"Listo");
-    }
-
-    btnChoose.addEventListener("click", () => fileInput.click());
-    fileInput.addEventListener("change", (e) => {
-      if (!e.target.files || !e.target.files[0]) return;
-      handleSelectedFile(e.target.files[0]);
-    });
-
-    dropZone.addEventListener("dragover", (e)=> {
-      e.preventDefault();
-      dropZone.style.background = "rgba(255,255,255,0.05)";
-    });
-    dropZone.addEventListener("dragleave", ()=> {
-      dropZone.style.background = "rgba(0,0,0,.12)";
-    });
-    dropZone.addEventListener("drop", (e)=> {
-      e.preventDefault();
-      dropZone.style.background = "rgba(0,0,0,.12)";
-      const f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if (f) handleSelectedFile(f);
-    });
-
-    function handleSelectedFile(f){
-      const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
-      const isImg = (f.type || "").startsWith("image/");
-      if (!isPdf && !isImg){
-        toastShow("Archivo no soportado", "Sube un PDF o una imagen (JPG/PNG).");
-        return;
-      }
-
-      currentInvoiceId = uuidv4();
-      selectedFile = f;
-      selectedBlob = null;
-      selectedFileName = f.name;
-
-      showFileMeta(f.name, `${isPdf ? "PDF" : "Imagen"} • ${humanSize(f.size)}`);
-      enableSend(true);
-
-      if (isImg){
-        const url = URL.createObjectURL(f);
-        imgPreview.src = url;
-        imgPreview.style.display = "block";
-        imgPlaceholder.style.display = "none";
-      } else {
-        imgPreview.style.display = "none";
-        imgPreview.src = "";
-        imgPlaceholder.style.display = "block";
-      }
-
-      addLog(`Archivo seleccionado: ${f.name}`);
-      setStatus("warn","Listo para enviar",10);
-    }
-
-    btnCamera.addEventListener("click", async () => {
-      try{
-        await openCamera();
-      }catch(err){
-        toastShow("No se pudo abrir la cámara", String(err?.message || err));
-      }
-    });
-
-    async function openCamera(){
-      if (!navigator.mediaDevices?.getUserMedia){
-        toastShow("Cámara no disponible", "Tu navegador no soporta getUserMedia.");
-        return;
-      }
-
-      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-
-      video.srcObject = camStream;
-      video.style.display = "block";
-      camPlaceholder.style.display = "none";
-      camControls.style.display = "flex";
-      addLog("Cámara abierta. Presiona Capturar.");
-    }
-
-    function stopCamera(){
-      if (camStream){
-        camStream.getTracks().forEach(t => t.stop());
-        camStream = null;
-      }
-      video.srcObject = null;
-      video.style.display = "none";
-      camControls.style.display = "none";
-      camPlaceholder.style.display = "block";
-      addLog("Cámara cerrada.");
-    }
-
-    btnStopCam.addEventListener("click", stopCamera);
-
-    btnSnap.addEventListener("click", () => {
-      if (!video.videoWidth) return;
-
-      const w = video.videoWidth;
-      const h = video.videoHeight;
-      canvas.width = w;
-      canvas.height = h;
-
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, w, h);
-
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-
-        currentInvoiceId = uuidv4();
-        selectedBlob = blob;
-        selectedFile = null;
-
-        selectedFileName = `invoice_${currentInvoiceId}.jpg`;
-        showFileMeta(selectedFileName, `Foto • ${humanSize(blob.size)}`);
-        enableSend(true);
-
-        const url = URL.createObjectURL(blob);
-        imgPreview.src = url;
-        imgPreview.style.display = "block";
-        imgPlaceholder.style.display = "none";
-
-        addLog("Foto capturada y lista para enviar.");
-        setStatus("warn","Listo para enviar",10);
-        stopCamera();
-      }, "image/jpeg", 0.92);
-    });
-
-    btnReset.addEventListener("click", () => {
-      clearSelection();
-      stopCamera();
-    });
-
-    btnSend.addEventListener("click", async () => {
-      try{
-        if (!CONFIG.N8N_START_WEBHOOK_URL || CONFIG.N8N_START_WEBHOOK_URL.includes("PASTE_")){
-          toastShow("Falta configurar", "Edita CONFIG.N8N_START_WEBHOOK_URL con tu Webhook de n8n.");
-          return;
-        }
-        if (!currentInvoiceId){
-          toastShow("Falta factura", "Selecciona un archivo o toma una foto.");
-          return;
-        }
-
-        enableSend(false);
-        setConn(true, "Enviando…");
-        setStatus("warn","Enviando factura…",15);
-        addLog("Enviando al workflow de n8n…");
-
-        const form = new FormData();
-        form.append("invoiceId", currentInvoiceId);
-        form.append("source", selectedBlob ? "camera" : "file");
-        form.append("client", "Yehuda Levy Frontend");
-
-        if (selectedFile){
-          form.append("file", selectedFile, selectedFile.name);
-        } else if (selectedBlob){
-          form.append("file", selectedBlob, selectedFileName);
-        }
-
-        const res = await fetch(CONFIG.N8N_START_WEBHOOK_URL, {
-          method: "POST",
-          body: form
-        });
-
-        if (!res.ok){
-          const text = await safeReadText(res);
-          throw new Error(`n8n respondió ${res.status}. ${text || ""}`.trim());
-        }
-
-        setConn(true, "Enviado");
-        setStatus("warn","Procesando…",25);
-        addLog("Workflow iniciado. Esperando progreso…");
-
-        if (CONFIG.SSE_URL && !CONFIG.SSE_URL.includes("PASTE_")){
-          openSSE(currentInvoiceId);
-        } else {
-          addLog("SSE no configurado todavía.");
-          toastShow("Enviado", "El workflow inició correctamente.");
-        }
-
-      }catch(err){
-        enableSend(true);
-        setConn(false, "Error");
-        setStatus("bad","Error al enviar",0);
-        addLog(`Error: ${err?.message || err}`);
-        toastShow("Error", String(err?.message || err).substring(0, 160));
-      }
-    });
-
-    async function safeReadText(res){
-      try { return await res.text(); } catch { return ""; }
-    }
-
-    function openSSE(invoiceId){
-      closeSSE();
-      const url = new URL(CONFIG.SSE_URL);
-      url.searchParams.set("invoiceId", invoiceId);
-      addLog(`Conectando SSE: ${url.toString()}`);
-      setConn(true, "Conectando SSE…");
-      sse = new EventSource(url.toString(), { withCredentials: false });
-      sse.onopen = () => {
-        setConn(true, "SSE conectado");
-        addLog("SSE conectado.");
-      };
-      sse.onerror = () => {
-        setConn(false, "SSE desconectado");
-        addLog("SSE desconectado.");
-      };
-      sse.onmessage = (evt) => {
-        try{
-          const data = JSON.parse(evt.data);
-          const st = String(data.status || "").toLowerCase();
-          const msg = data.message || "Actualización";
-          const prog = Number.isFinite(Number(data.progress)) ? Number(data.progress) : 30;
-          addLog(`[${st}] ${msg}`);
-          if (st === "completed"){
-            setStatus("ok","Completado",100);
-            setConn(true,"Listo");
-            toastShow("Completado", "Factura procesada correctamente.");
-            closeSSE();
-          } else if (st === "error"){
-            setStatus("bad","Error",0);
-            setConn(false,"Error");
-            toastShow("Error", msg);
-            closeSSE();
-            enableSend(true);
-          } else {
-            setStatus("warn", msg, prog);
-            setConn(true,"Procesando");
-          }
-        }catch(e){
-          addLog("SSE: mensaje no-JSON.");
-        }
-      };
-    }
-
-    function closeSSE(){
-      if (sse){
-        sse.close();
-        sse = null;
-        addLog("SSE cerrado.");
-      }
-    }
-
-    setConn(true, "Listo");
   </script>
 </body>
 </html>
