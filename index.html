@@ -385,8 +385,9 @@
     }
 
     .logo-text p {
-      font-size: 12px;
-      color: var(--text-secondary);
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
     }
 
     .header-actions {
@@ -948,7 +949,6 @@
           </svg>
         </div>
         <div class="logo-text">
-          <h1>Invoice Management System</h1>
           <p>AI-Powered Invoice Processing</p>
         </div>
       </div>
@@ -972,10 +972,10 @@
         </div>
         <button class="btn-settings" onclick="showSetupModal()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 1v6m0 6v6"></path>
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
           </svg>
-          Settings
+          Connect
         </button>
       </div>
     </div>
@@ -1055,7 +1055,7 @@
         <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
           Drag and drop or choose a file to process
         </p>
-        <div class="upload-area" id="uploadArea">
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
           <div class="upload-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1152,7 +1152,7 @@
       TEMPLATE_URL: "https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy",
       // URL del Apps Script CENTRALIZADO (una sola URL para TODOS los usuarios)
       // IMPORTANTE: Actualiza esto después de deployar el script centralizado
-      CENTRAL_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwoQRSkitoEVydVbrZLfgswTANztkS3n-YufNFetqzkfqOhCylITU1A5yOp0VdbQbKc/exec"
+      CENTRAL_APPS_SCRIPT_URL: "https://script.google.com/macros/s/TU_DEPLOYMENT_URL_AQUI/exec"
     };
 
     let currentInvoiceId = null;
@@ -1322,6 +1322,73 @@
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (file) {
+        uploadInvoice(file);
+      }
+    }
+
+    // Drag and Drop functionality
+    function initializeDragAndDrop() {
+      const uploadArea = document.getElementById('uploadArea');
+      
+      if (!uploadArea) return;
+
+      // Prevent default drag behaviors
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+      });
+
+      // Highlight drop area when item is dragged over it
+      ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, highlight, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, unhighlight, false);
+      });
+
+      // Handle dropped files
+      uploadArea.addEventListener('drop', handleDrop, false);
+    }
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function highlight(e) {
+      const uploadArea = document.getElementById('uploadArea');
+      uploadArea.style.borderColor = 'var(--primary)';
+      uploadArea.style.backgroundColor = 'rgba(66, 133, 244, 0.05)';
+    }
+
+    function unhighlight(e) {
+      const uploadArea = document.getElementById('uploadArea');
+      uploadArea.style.borderColor = 'var(--border)';
+      uploadArea.style.backgroundColor = 'transparent';
+    }
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+
+      if (files.length > 0) {
+        const file = files[0];
+        
+        // Validate file type
+        const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+          showToast('Invalid File Type', 'Please upload PDF, JPG, or PNG files only', 'error');
+          return;
+        }
+
+        // Validate file size (10MB)
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+          showToast('File Too Large', 'Please upload files smaller than 10MB', 'error');
+          return;
+        }
+
         uploadInvoice(file);
       }
     }
@@ -1553,6 +1620,7 @@
     window.addEventListener('load', () => {
       initTheme();
       checkConfiguration();
+      initializeDragAndDrop(); // Initialize drag and drop functionality
     });
   </script>
 </body>
