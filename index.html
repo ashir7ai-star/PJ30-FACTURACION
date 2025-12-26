@@ -869,9 +869,11 @@
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
           <div class="info-banner-content">
-            <div class="info-banner-title">First Time Setup</div>
+            <div class="info-banner-title">First Time Setup - 3 Steps</div>
             <div class="info-banner-text">
-              Copy the template, run Initial Setup in the Invoice System menu, then paste your IDs below
+              1. Copy the template and run "Initial Setup"<br>
+              2. In Apps Script: Deploy → New deployment → Web app<br>
+              3. Paste all IDs and the Apps Script URL below
             </div>
           </div>
         </div>
@@ -912,6 +914,24 @@
           </div>
         </div>
 
+        <div class="setup-step">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Apps Script API URL
+          </label>
+          <input 
+            type="text" 
+            id="appsScriptUrlInput" 
+            placeholder="Paste your Apps Script deployment URL"
+          >
+          <div class="help-text">
+            In your Sheet: Extensions → Apps Script → Deploy → Web app URL
+          </div>
+        </div>
+
         <div class="setup-actions">
           <button class="btn-setup secondary" onclick="openTemplateLink()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -947,8 +967,8 @@
           </svg>
         </div>
         <div class="logo-text">
-          <h1>Yehuda Levy</h1>
-          <p>Invoice Management System</p>
+          <h1>Invoice Management System</h1>
+          <p>AI-Powered Invoice Processing</p>
         </div>
       </div>
       <div class="header-actions">
@@ -1148,8 +1168,7 @@
   <script>
     const CONFIG = {
       N8N_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
-      TEMPLATE_URL: "https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy",
-      APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz9BFnP3faOPk4fSWvLuCcMJm8mw25IFoecMFgeUgQvW5lgYaSOTYbrIy6taiQxUFHuPg/exec"
+      TEMPLATE_URL: "https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy"
     };
 
     let currentInvoiceId = null;
@@ -1183,8 +1202,9 @@
     function checkConfiguration() {
       const sheetId = localStorage.getItem('userSheetId');
       const folderId = localStorage.getItem('userFolderId');
+      const appsScriptUrl = localStorage.getItem('userAppsScriptUrl');
       
-      if (!sheetId || !folderId) {
+      if (!sheetId || !folderId || !appsScriptUrl) {
         showSetupModal();
         return false;
       }
@@ -1197,8 +1217,10 @@
       document.getElementById('setupModal').classList.add('active');
       const sheetId = localStorage.getItem('userSheetId') || '';
       const folderId = localStorage.getItem('userFolderId') || '';
+      const appsScriptUrl = localStorage.getItem('userAppsScriptUrl') || '';
       document.getElementById('sheetIdInput').value = sheetId;
       document.getElementById('folderIdInput').value = folderId;
+      document.getElementById('appsScriptUrlInput').value = appsScriptUrl;
     }
 
     function hideSetupModal() {
@@ -1212,9 +1234,10 @@
     function saveConfiguration() {
       const sheetIdInput = document.getElementById('sheetIdInput').value.trim();
       const folderIdInput = document.getElementById('folderIdInput').value.trim();
+      const appsScriptUrlInput = document.getElementById('appsScriptUrlInput').value.trim();
       
-      if (!sheetIdInput || !folderIdInput) {
-        showToast('Configuration Error', 'Please enter both Sheet ID and Folder ID', 'error');
+      if (!sheetIdInput || !folderIdInput || !appsScriptUrlInput) {
+        showToast('Configuration Error', 'Please enter Sheet ID, Folder ID, and Apps Script URL', 'error');
         return;
       }
       
@@ -1233,11 +1256,19 @@
         return;
       }
       
+      // Validate Apps Script URL
+      if (!appsScriptUrlInput.includes('script.google.com') || !appsScriptUrlInput.includes('/exec')) {
+        showToast('Invalid URL', 'Please enter a valid Apps Script deployment URL', 'error');
+        return;
+      }
+      
       localStorage.setItem('userSheetId', sheetId);
       localStorage.setItem('userFolderId', folderId);
+      localStorage.setItem('userAppsScriptUrl', appsScriptUrlInput);
       
       console.log('Saved Sheet ID:', sheetId);
       console.log('Saved Folder ID:', folderId);
+      console.log('Saved Apps Script URL:', appsScriptUrlInput);
       
       hideSetupModal();
       showToast('Configuration Saved', 'Your system is now configured and ready to use', 'success');
@@ -1262,11 +1293,15 @@
 
     async function loadMetrics() {
       const sheetId = localStorage.getItem('userSheetId');
-      if (!sheetId) return;
+      const appsScriptUrl = localStorage.getItem('userAppsScriptUrl');
+      
+      if (!sheetId || !appsScriptUrl) return;
 
       try {
-        const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=metrics&sheetId=${sheetId}`);
+        const response = await fetch(`${appsScriptUrl}?action=metrics&sheetId=${sheetId}`);
         const data = await response.json();
+        
+        console.log('Metrics response:', data);
         
         if (data.error) {
           console.warn('Metrics error:', data.error);
@@ -1284,11 +1319,15 @@
 
     async function loadRecentInvoices() {
       const sheetId = localStorage.getItem('userSheetId');
-      if (!sheetId) return;
+      const appsScriptUrl = localStorage.getItem('userAppsScriptUrl');
+      
+      if (!sheetId || !appsScriptUrl) return;
 
       try {
-        const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=recentInvoices&sheetId=${sheetId}`);
+        const response = await fetch(`${appsScriptUrl}?action=recentInvoices&sheetId=${sheetId}`);
         const data = await response.json();
+        
+        console.log('Recent invoices response:', data);
         
         if (data.error || !Array.isArray(data) || data.length === 0) {
           return;
@@ -1319,8 +1358,9 @@
     async function uploadInvoice(file) {
       const sheetId = localStorage.getItem('userSheetId');
       const folderId = localStorage.getItem('userFolderId');
+      const appsScriptUrl = localStorage.getItem('userAppsScriptUrl');
       
-      if (!sheetId || !folderId) {
+      if (!sheetId || !folderId || !appsScriptUrl) {
         showToast('Configuration Required', 'Please configure your system first', 'error');
         showSetupModal();
         return;
@@ -1329,9 +1369,11 @@
       // Get initial count
       let initialCount = 0;
       try {
-        const metricsResponse = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=metrics&sheetId=${sheetId}`);
+        console.log('Getting initial invoice count...');
+        const metricsResponse = await fetch(`${appsScriptUrl}?action=metrics&sheetId=${sheetId}`);
         const metricsData = await metricsResponse.json();
         initialCount = metricsData.totalInvoices || 0;
+        console.log('Initial invoice count:', initialCount);
       } catch (error) {
         console.warn('Could not get initial invoice count:', error);
       }
@@ -1422,22 +1464,29 @@
       const maxAttempts = 15;
       let attempts = 0;
       const sheetId = localStorage.getItem('userSheetId');
+      const appsScriptUrl = localStorage.getItem('userAppsScriptUrl');
 
       return new Promise((resolve) => {
         const checkInterval = setInterval(async () => {
           attempts++;
           
+          console.log(`Polling attempt ${attempts}/${maxAttempts}...`);
+          
           try {
-            const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=metrics&sheetId=${sheetId}`);
+            const response = await fetch(`${appsScriptUrl}?action=metrics&sheetId=${sheetId}`);
             const data = await response.json();
+            
+            console.log(`Current invoices: ${data.totalInvoices}, waiting for: ${initialCount + 1}`);
             
             if (data.totalInvoices > initialCount) {
               clearInterval(checkInterval);
+              console.log('✅ New invoice detected!');
               resolve(true);
             }
             
             if (attempts >= maxAttempts) {
               clearInterval(checkInterval);
+              console.log('⏱️ Polling timeout reached');
               resolve(false);
             }
           } catch (error) {
