@@ -888,10 +888,10 @@
           <input 
             type="text" 
             id="sheetIdInput" 
-            placeholder="Paste your Google Sheet ID here"
+            placeholder="Paste Sheet ID or URL here"
           >
           <div class="help-text">
-            Find this in your Sheet's INSTRUCTIONS tab after running setup
+            Paste the full URL or just the ID from your Sheet's INSTRUCTIONS tab
           </div>
         </div>
 
@@ -905,10 +905,10 @@
           <input 
             type="text" 
             id="folderIdInput" 
-            placeholder="Paste your Drive Folder ID here"
+            placeholder="Paste Folder ID or URL here"
           >
           <div class="help-text">
-            Also found in the INSTRUCTIONS tab of your copied Sheet
+            Paste the full URL or just the ID from your INSTRUCTIONS tab
           </div>
         </div>
 
@@ -1210,16 +1210,34 @@
     }
 
     function saveConfiguration() {
-      const sheetId = document.getElementById('sheetIdInput').value.trim();
-      const folderId = document.getElementById('folderIdInput').value.trim();
+      const sheetIdInput = document.getElementById('sheetIdInput').value.trim();
+      const folderIdInput = document.getElementById('folderIdInput').value.trim();
+      
+      if (!sheetIdInput || !folderIdInput) {
+        showToast('Configuration Error', 'Please enter both Sheet ID and Folder ID', 'error');
+        return;
+      }
+      
+      // Extract clean IDs (handles URLs or IDs)
+      const sheetId = extractGoogleId(sheetIdInput);
+      const folderId = extractGoogleId(folderIdInput);
       
       if (!sheetId || !folderId) {
-        showToast('Configuration Error', 'Please enter both Sheet ID and Folder ID', 'error');
+        showToast('Invalid ID', 'Could not extract valid IDs. Please check your input.', 'error');
+        return;
+      }
+      
+      // Validate that they look like Google IDs
+      if (sheetId.length < 20 || folderId.length < 20) {
+        showToast('Invalid ID', 'IDs seem too short. Please check your Sheet ID and Folder ID.', 'error');
         return;
       }
       
       localStorage.setItem('userSheetId', sheetId);
       localStorage.setItem('userFolderId', folderId);
+      
+      console.log('Saved Sheet ID:', sheetId);
+      console.log('Saved Folder ID:', folderId);
       
       hideSetupModal();
       showToast('Configuration Saved', 'Your system is now configured and ready to use', 'success');
@@ -1480,6 +1498,33 @@
         const v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
+    }
+
+    // Extract ID from Google URL or return as-is if already an ID
+    function extractGoogleId(input) {
+      if (!input) return '';
+      
+      input = input.trim();
+      
+      // If it's already a clean ID (no slashes or https), return it
+      if (!input.includes('/') && !input.includes('http')) {
+        return input;
+      }
+      
+      // Extract Sheet ID from URL
+      const sheetMatch = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+      if (sheetMatch) {
+        return sheetMatch[1];
+      }
+      
+      // Extract Folder ID from URL
+      const folderMatch = input.match(/\/folders\/([a-zA-Z0-9-_]+)/);
+      if (folderMatch) {
+        return folderMatch[1];
+      }
+      
+      // If no pattern matched, return original (might be a valid ID)
+      return input;
     }
 
     function takePhoto() {
