@@ -24,11 +24,11 @@
     }
 
     [data-theme="dark"] {
-      --text: #E8EAED;
+      --text: #CCCCCC;
       --text-secondary: #9AA0A6;
-      --border: #3C4043;
-      --bg: #202124;
-      --bg-secondary: #292A2D;
+      --border: #3E3E42;
+      --bg: #1E1E1E;
+      --bg-secondary: #252526;
     }
 
     body {
@@ -147,7 +147,7 @@
     }
 
     [data-theme="dark"] .setup-content {
-      background: #292A2D;
+      background: #252526;
     }
 
     .setup-header {
@@ -903,7 +903,8 @@
     }
 
     [data-theme="dark"] .toast {
-      background: #292A2D;
+      background: #2D2D2D;
+      border: 1px solid #3E3E42;
     }
 
     @keyframes slideIn {
@@ -1871,7 +1872,7 @@
       
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-      const textColor = isDark ? '#E8EAED' : '#202124';
+      const textColor = isDark ? '#CCCCCC' : '#202124';
       
       try {
         invoiceChart = new Chart(ctx, {
@@ -1896,7 +1897,7 @@
               display: false
             },
             tooltip: {
-              backgroundColor: isDark ? '#292A2D' : '#FFFFFF',
+              backgroundColor: isDark ? '#2D2D2D' : '#FFFFFF',
               titleColor: textColor,
               bodyColor: textColor,
               borderColor: gridColor,
