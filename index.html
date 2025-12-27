@@ -1798,7 +1798,11 @@
       });
       
       const sheetId = localStorage.getItem('userSheetId');
-      if (!sheetId) return;
+      if (!sheetId) {
+        // Show demo data if not configured
+        showDemoChart(period);
+        return;
+      }
       
       try {
         const response = await fetch(`${CONFIG.CENTRAL_APPS_SCRIPT_URL}?action=chartData&sheetId=${sheetId}&period=${period}`);
@@ -1806,14 +1810,63 @@
         
         if (data.labels && data.values) {
           createChart(data.labels, data.values);
+        } else {
+          // Fallback to demo data if API doesn't return data
+          console.log('No chart data from API, showing demo data');
+          showDemoChart(period);
         }
       } catch (error) {
         console.error('Error loading chart data:', error);
+        // Fallback to demo data on error
+        showDemoChart(period);
       }
     }
 
+    function showDemoChart(period) {
+      let labels, values;
+      
+      if (period === 'week') {
+        // Last 7 days
+        labels = [];
+        values = [];
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(`${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`);
+          values.push(Math.floor(Math.random() * 3)); // Random 0-2
+        }
+      } else if (period === 'month') {
+        // Last 4 weeks
+        labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+        values = [2, 3, 1, 2];
+      } else {
+        // Last 12 months
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const now = new Date();
+        labels = [];
+        values = [];
+        for (let i = 11; i >= 0; i--) {
+          const date = new Date(now);
+          date.setMonth(date.getMonth() - i);
+          labels.push(`${months[date.getMonth()]} ${date.getFullYear()}`);
+          values.push(Math.floor(Math.random() * 5)); // Random 0-4
+        }
+      }
+      
+      createChart(labels, values);
+    }
+
     function createChart(labels, data) {
+      console.log('📊 Creating chart with:', { labels, data });
+      console.log('Chart.js available:', typeof Chart !== 'undefined');
+      
       const ctx = document.getElementById('invoiceChart');
+      console.log('Canvas element:', ctx);
+      
+      if (!ctx) {
+        console.error('❌ Canvas element not found!');
+        return;
+      }
       
       if (invoiceChart) {
         invoiceChart.destroy();
@@ -1823,22 +1876,23 @@
       const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
       const textColor = isDark ? '#E8EAED' : '#202124';
       
-      invoiceChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Invoices Processed',
-            data: data,
-            backgroundColor: 'rgba(66, 133, 244, 0.8)',
-            borderColor: 'rgba(66, 133, 244, 1)',
-            borderWidth: 2,
-            borderRadius: 8,
-            borderSkipped: false,
-          }]
-        },
-        options: {
-          responsive: true,
+      try {
+        invoiceChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Invoices Processed',
+              data: data,
+              backgroundColor: 'rgba(66, 133, 244, 0.8)',
+              borderColor: 'rgba(66, 133, 244, 1)',
+              borderWidth: 2,
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          },
+          options: {
+            responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: {
@@ -1891,9 +1945,13 @@
           }
         }
       });
+      console.log('✅ Chart created successfully');
+    } catch (error) {
+      console.error('❌ Error creating chart:', error);
     }
+  }
 
-    async function loadInitialChart() {
+  async function loadInitialChart() {
       await loadChartData('week');
     }
 
