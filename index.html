@@ -252,6 +252,47 @@
       color: #1557b0;
     }
 
+    .info-banner {
+      background: #e8f0fe;
+      border: 1px solid #d2e3fc;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 12px;
+      align-items: start;
+    }
+
+    [data-theme="dark"] .info-banner {
+      background: rgba(26, 115, 232, 0.1);
+      border-color: rgba(26, 115, 232, 0.3);
+    }
+
+    .info-banner svg {
+      width: 20px;
+      height: 20px;
+      color: #1a73e8;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .info-banner-content {
+      flex: 1;
+    }
+
+    .info-banner-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1a73e8;
+      margin-bottom: 4px;
+    }
+
+    .info-banner-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
     .setup-actions {
       display: flex;
       gap: 12px;
@@ -900,26 +941,42 @@
             <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
           </svg>
         </div>
-        <h1>Connect Your System</h1>
-        <p>Enter your Google Sheet and Drive Folder IDs to get started</p>
+        <h1>Welcome to Invoice System</h1>
+        <p>Connect your Google Sheet to get started</p>
       </div>
       
       <div class="setup-body">
+        <div class="info-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div class="info-banner-content">
+            <div class="info-banner-title">First Time Setup - 2 Simple Steps</div>
+            <div class="info-banner-text">
+              1. Copy the template and run "Initial Setup"<br>
+              2. Paste your Sheet ID and Folder ID below
+            </div>
+          </div>
+        </div>
+
         <div class="setup-step">
           <label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="9" x2="15" y2="9"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
             </svg>
-            Google Sheet ID
+            Sheet ID
           </label>
           <input 
             type="text" 
             id="sheetIdInput" 
-            placeholder="1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk"
+            placeholder="Paste Sheet ID or URL here"
           >
           <div class="help-text">
-            The ID from your Google Sheet URL or paste the full URL
+            Find this in your Sheet's INSTRUCTIONS tab after running setup
           </div>
         </div>
 
@@ -933,26 +990,26 @@
           <input 
             type="text" 
             id="folderIdInput" 
-            placeholder="1VqFpY8KZ9X2mN7wL3cR4vB5tG6hJ8kP9"
+            placeholder="Paste Folder ID or URL here"
           >
           <div class="help-text">
-            The ID from your Drive folder URL or paste the full URL
+            Also found in the INSTRUCTIONS tab of your copied Sheet
           </div>
         </div>
 
         <div class="setup-actions">
-          <button class="btn-setup secondary" onclick="closeSetupModal()">
+          <button class="btn-setup secondary" onclick="openTemplateLink()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
-            Cancel
+            Copy Template
           </button>
           <button class="btn-setup primary" onclick="saveConfiguration()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            Connect System
+            Save & Continue
           </button>
         </div>
       </div>
@@ -1219,7 +1276,8 @@
   <script>
     const CONFIG = {
       N8N_WEBHOOK_URL: 'https://ashir7ai.app.n8n.cloud/webhook/9bc0e9c6-d07f-4e12-a89c-b32acf52e31a',
-      CENTRAL_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxaVhQWJGD6eZJP0l71MUr3P4OvQShVxYAOUWkk4a3xXgkG1EXhtmMy4CPcRYE0pfhD/exec'
+      CENTRAL_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxaVhQWJGD6eZJP0l71MUr3P4OvQShVxYAOUWkk4a3xXgkG1EXhtmMy4CPcRYE0pfhD/exec',
+      TEMPLATE_URL: 'https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy'
     };
 
     let currentInvoiceId = null;
@@ -1259,6 +1317,10 @@
 
     function closeSetupModal() {
       document.getElementById('setupModal').classList.remove('active');
+    }
+
+    function openTemplateLink() {
+      window.open(CONFIG.TEMPLATE_URL, '_blank');
     }
 
     function saveConfiguration() {
