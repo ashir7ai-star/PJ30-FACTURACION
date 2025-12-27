@@ -319,7 +319,7 @@
     }
 
     .logo {
-      height: 120px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -348,7 +348,7 @@
       gap: 12px;
     }
 
-    .theme-toggle, .settings-btn {
+    .theme-toggle {
       width: 42px;
       height: 42px;
       background: var(--bg-secondary);
@@ -362,38 +362,122 @@
       color: var(--text);
     }
 
-    .theme-toggle:hover, .settings-btn:hover {
+    .theme-toggle:hover {
       background: var(--border);
       transform: translateY(-2px);
     }
 
-    .status-indicator {
+    .connect-btn {
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+      border: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+    }
+
+    .connect-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+    }
+
+    .connect-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .quick-actions-wrapper {
+      position: relative;
+    }
+
+    .quick-actions-btn {
       display: flex;
       align-items: center;
       gap: 8px;
       padding: 8px 16px;
-      background: #E8F5E9;
-      border-radius: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
       font-size: 13px;
       font-weight: 600;
-      color: #34A853;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    [data-theme="dark"] .status-indicator {
-      background: #1E3A2E;
+    .quick-actions-btn:hover {
+      background: var(--border);
+      transform: translateY(-2px);
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: #34A853;
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
+    .quick-actions-btn svg {
+      width: 16px;
+      height: 16px;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+    .quick-actions-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      min-width: 200px;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .quick-actions-menu.active {
+      display: block;
+      animation: dropdownFade 0.2s ease-out;
+    }
+
+    @keyframes dropdownFade {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .quick-actions-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .quick-actions-item:hover {
+      background: var(--bg-secondary);
+    }
+
+    .quick-actions-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--primary);
+    }
+
+    .quick-actions-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
     }
 
     .metrics-grid {
@@ -899,15 +983,65 @@
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
         </button>
-        <div class="status-indicator">
-          <span class="status-dot"></span>
-          System Ready
+        
+        <div class="quick-actions-wrapper">
+          <button class="quick-actions-btn" onclick="toggleQuickActions()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+              <circle cx="5" cy="12" r="1"></circle>
+            </svg>
+            Quick Actions
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          
+          <div id="quickActionsMenu" class="quick-actions-menu">
+            <div class="quick-actions-item" onclick="openUserSheet()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+              Open Sheet
+            </div>
+            
+            <div class="quick-actions-item" onclick="openUserDrive()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Open Drive
+            </div>
+            
+            <div class="quick-actions-divider"></div>
+            
+            <div class="quick-actions-item" onclick="refreshDashboard()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              Refresh Data
+            </div>
+            
+            <div class="quick-actions-divider"></div>
+            
+            <div class="quick-actions-item" onclick="showSetupModal(); toggleQuickActions();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m0-6h6m-6 0H6m3-6.5l-4.33 2.5m8.66 5l4.33 2.5m0-10l-4.33 2.5m-8.66 5L1.5 17"></path>
+              </svg>
+              Settings
+            </div>
+          </div>
         </div>
-        <button class="settings-btn" onclick="showSetupModal()" title="Settings">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 1v6m0 6v6m0-6h6m-6 0H6m3-6.5l-4.33 2.5m8.66 5l4.33 2.5m0-10l-4.33 2.5m-8.66 5L1.5 17"></path>
+        
+        <button class="connect-btn" onclick="showSetupModal()" title="Connect your system">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
           </svg>
+          Connect
         </button>
       </div>
     </header>
@@ -1438,6 +1572,58 @@
       showToast('Coming Soon', 'Camera feature will be available in the next update', 'success');
     }
 
+    // Quick Actions Functions
+    function toggleQuickActions() {
+      const menu = document.getElementById('quickActionsMenu');
+      menu.classList.toggle('active');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const wrapper = document.querySelector('.quick-actions-wrapper');
+      const menu = document.getElementById('quickActionsMenu');
+      
+      if (wrapper && !wrapper.contains(event.target)) {
+        menu.classList.remove('active');
+      }
+    });
+
+    function openUserSheet() {
+      const sheetId = localStorage.getItem('userSheetId');
+      
+      if (!sheetId) {
+        showToast('Configuration Required', 'Please configure your Sheet ID first', 'error');
+        showSetupModal();
+        toggleQuickActions();
+        return;
+      }
+      
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+      window.open(sheetUrl, '_blank');
+      toggleQuickActions();
+    }
+
+    function openUserDrive() {
+      const folderId = localStorage.getItem('userFolderId');
+      
+      if (!folderId) {
+        showToast('Configuration Required', 'Please configure your Folder ID first', 'error');
+        showSetupModal();
+        toggleQuickActions();
+        return;
+      }
+      
+      const folderUrl = `https://drive.google.com/drive/folders/${folderId}`;
+      window.open(folderUrl, '_blank');
+      toggleQuickActions();
+    }
+
+    function refreshDashboard() {
+      showToast('Refreshing', 'Loading latest data...', 'success');
+      loadDashboard();
+      toggleQuickActions();
+    }
+
     const uploadArea = document.getElementById('uploadArea');
     uploadArea.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -1464,5 +1650,3 @@
   </script>
 </body>
 </html>
-
-
