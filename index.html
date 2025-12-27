@@ -360,7 +360,7 @@
     }
 
     .logo {
-      height: 120px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -432,6 +432,15 @@
     .connect-btn svg {
       width: 16px;
       height: 16px;
+    }
+
+    .connect-btn.connected {
+      background: linear-gradient(135deg, #34A853 0%, #5FBD73 100%);
+      box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
+    }
+
+    .connect-btn.connected:hover {
+      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.4);
     }
 
     .quick-actions-wrapper {
@@ -1086,14 +1095,15 @@
             <div class="quick-actions-item" onclick="showSetupModal(); toggleQuickActions();">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M12 1v6m0 6v6m0-6h6m-6 0H6m3-6.5l-4.33 2.5m8.66 5l4.33 2.5m0-10l-4.33 2.5m-8.66 5L1.5 17"></path>
+                <path d="M12 1v6m0 6v6M1 12h6m6 0h6"></path>
+                <path d="M4.2 4.2l4.2 4.2m7.2 0l4.2-4.2M4.2 19.8l4.2-4.2m7.2 0l4.2 4.2"></path>
               </svg>
               Settings
             </div>
           </div>
         </div>
         
-        <button class="connect-btn" onclick="showSetupModal()" title="Connect your system">
+        <button class="connect-btn" id="connectBtn" onclick="showSetupModal()" title="Connect your system">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
             <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -1242,7 +1252,7 @@
             <div class="card-title">Recent Invoices</div>
             <div class="card-subtitle">Last 10 processed invoices</div>
           </div>
-          <a href="#" class="view-all-link">
+          <a href="#" class="view-all-link" onclick="viewAllInvoices(); return false;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
             </svg>
@@ -1276,7 +1286,7 @@
   <script>
     const CONFIG = {
       N8N_WEBHOOK_URL: 'https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda',
-      CENTRAL_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwWjI5W6tpTB3HDStYtuPWd_kj9wYaNUqFojuY0bDgPfXxEcJG6qgZlJfU0PBQHwm-uJg/exec',
+      CENTRAL_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxaVhQWJGD6eZJP0l71MUr3P4OvQShVxYAOUWkk4a3xXgkG1EXhtmMy4CPcRYE0pfhD/exec',
       TEMPLATE_URL: 'https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy'
     };
 
@@ -1339,6 +1349,7 @@
       localStorage.setItem('userFolderId', folderId);
       
       closeSetupModal();
+      updateConnectButton();
       showToast('Configuration Saved', 'Your system is now ready to process invoices', 'success');
       loadDashboard();
     }
@@ -1346,6 +1357,8 @@
     function checkConfiguration() {
       const sheetId = localStorage.getItem('userSheetId');
       const folderId = localStorage.getItem('userFolderId');
+      
+      updateConnectButton();
       
       if (!sheetId || !folderId) {
         showSetupModal();
@@ -1686,6 +1699,36 @@
       toggleQuickActions();
     }
 
+    function viewAllInvoices() {
+      const folderId = localStorage.getItem('userFolderId');
+      
+      if (!folderId) {
+        showToast('Configuration Required', 'Please configure your Folder ID first', 'error');
+        showSetupModal();
+        return;
+      }
+      
+      const folderUrl = `https://drive.google.com/drive/folders/${folderId}`;
+      window.open(folderUrl, '_blank');
+    }
+
+    function updateConnectButton() {
+      const sheetId = localStorage.getItem('userSheetId');
+      const folderId = localStorage.getItem('userFolderId');
+      const connectBtn = document.getElementById('connectBtn');
+      
+      if (sheetId && folderId) {
+        connectBtn.classList.add('connected');
+        connectBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Connected
+        `;
+        connectBtn.title = 'System connected - Click to change settings';
+      }
+    }
+
     const uploadArea = document.getElementById('uploadArea');
     uploadArea.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -1712,6 +1755,3 @@
   </script>
 </body>
 </html>
-
-
-
