@@ -117,7 +117,6 @@
       }
     }
 
-    /* Setup Modal - Diseño Corporativo Azul */
     .setup-modal {
       display: none;
       position: fixed;
@@ -293,124 +292,79 @@
     }
 
     .btn-setup.secondary {
-      background: var(--bg);
+      background: var(--bg-secondary);
       color: var(--text);
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
     }
 
     .btn-setup.secondary:hover {
-      background: var(--bg-secondary);
-      border-color: var(--text-secondary);
+      background: var(--border);
     }
 
-    .info-banner {
-      background: #e8f0fe;
-      border: 1px solid #d2e3fc;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 28px;
-      display: flex;
-      gap: 12px;
-      align-items: start;
-    }
-
-    [data-theme="dark"] .info-banner {
-      background: rgba(26, 115, 232, 0.1);
-      border-color: rgba(26, 115, 232, 0.3);
-    }
-
-    .info-banner svg {
-      width: 20px;
-      height: 20px;
-      color: #1a73e8;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .info-banner-content {
-      flex: 1;
-    }
-
-    .info-banner-title {
-      font-weight: 600;
-      font-size: 14px;
-      color: #1a73e8;
-      margin-bottom: 4px;
-    }
-
-    .info-banner-text {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    /* Header */
     .header {
       background: var(--bg);
-      padding: 16px 24px;
       border-radius: 12px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 20px 28px;
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
     .logo {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-title p {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .header-right {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
+    .theme-toggle, .settings-btn {
+      width: 42px;
+      height: 42px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-    }
-
-    .logo-icon svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    .logo-text h1 {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .logo-text p {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .theme-toggle {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      border: none;
-      background: var(--bg-secondary);
-      color: var(--text);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      color: var(--text);
     }
 
-    .theme-toggle:hover {
+    .theme-toggle:hover, .settings-btn:hover {
       background: var(--border);
+      transform: translateY(-2px);
     }
 
     .status-indicator {
@@ -421,20 +375,20 @@
       background: #E8F5E9;
       border-radius: 20px;
       font-size: 13px;
-      font-weight: 500;
-      color: var(--success);
+      font-weight: 600;
+      color: #34A853;
     }
 
     [data-theme="dark"] .status-indicator {
-      background: rgba(52, 168, 83, 0.2);
+      background: #1E3A2E;
     }
 
     .status-dot {
       width: 8px;
       height: 8px;
-      background: var(--success);
+      background: #34A853;
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      animation: pulse 2s ease-in-out infinite;
     }
 
     @keyframes pulse {
@@ -442,37 +396,17 @@
       50% { opacity: 0.5; }
     }
 
-    .btn-settings {
-      padding: 10px 20px;
-      background: var(--bg-secondary);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-settings:hover {
-      background: var(--border);
-    }
-
-    /* Metrics */
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
       margin-bottom: 20px;
     }
 
     .metric-card {
       background: var(--bg);
-      padding: 20px;
       border-radius: 12px;
+      padding: 24px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -482,231 +416,264 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
-    .metric-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
     .metric-icon {
       width: 48px;
       height: 48px;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .metric-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .metric-icon.blue {
+      background: #E8F0FE;
+      color: var(--primary);
+    }
+
+    .metric-icon.green {
+      background: #E8F5E9;
+      color: var(--success);
+    }
+
+    .metric-icon.red {
+      background: #FCE8E6;
+      color: var(--danger);
+    }
+
+    .metric-icon.yellow {
+      background: #FEF7E0;
+      color: var(--warning);
     }
 
     .metric-value {
       font-size: 32px;
       font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .metric-label {
       font-size: 13px;
       color: var(--text-secondary);
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      margin-bottom: 8px;
     }
 
     .metric-change {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 12px;
-      margin-top: 8px;
       padding: 4px 8px;
-      border-radius: 4px;
-    }
-
-    .metric-change.positive {
-      color: var(--success);
       background: #E8F5E9;
+      color: #34A853;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
-    [data-theme="dark"] .metric-change.positive {
-      background: rgba(52, 168, 83, 0.2);
+    [data-theme="dark"] .metric-change {
+      background: #1E3A2E;
     }
 
-    /* Main Content */
     .main-content {
       display: grid;
       grid-template-columns: 1fr 1.5fr;
-      gap: 16px;
-    }
-
-    .upload-section, .invoices-section {
-      background: var(--bg);
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      gap: 20px;
       margin-bottom: 20px;
     }
 
-    .section-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
+    .card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    .btn-link {
-      display: inline-flex;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: transparent;
-      border: none;
-      color: var(--primary);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.2s;
+      margin-bottom: 24px;
     }
 
-    .btn-link:hover {
-      background: var(--bg-secondary);
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
     }
 
     .upload-area {
       border: 2px dashed var(--border);
       border-radius: 12px;
-      padding: 40px 20px;
+      padding: 48px 24px;
       text-align: center;
+      transition: all 0.3s;
       background: var(--bg-secondary);
       cursor: pointer;
-      transition: all 0.3s;
     }
 
     .upload-area:hover {
       border-color: var(--primary);
-      background: rgba(66, 133, 244, 0.05);
+      background: var(--bg);
+    }
+
+    .upload-area.drag-over {
+      border-color: var(--primary);
+      background: #E8F0FE;
+    }
+
+    [data-theme="dark"] .upload-area.drag-over {
+      background: rgba(66, 133, 244, 0.1);
     }
 
     .upload-icon {
       width: 64px;
       height: 64px;
-      margin: 0 auto 16px;
-      background: rgba(66, 133, 244, 0.1);
+      margin: 0 auto 20px;
+      background: #E8F0FE;
       border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--primary);
     }
 
     .upload-icon svg {
       width: 32px;
       height: 32px;
-      color: var(--primary);
     }
 
-    .upload-area h3 {
+    .upload-title {
       font-size: 16px;
+      font-weight: 600;
       margin-bottom: 8px;
-      color: var(--text);
     }
 
-    .upload-area p {
+    .upload-subtitle {
+      font-size: 13px;
       color: var(--text-secondary);
-      font-size: 14px;
+      margin-bottom: 24px;
     }
 
     .upload-buttons {
       display: flex;
       gap: 12px;
       justify-content: center;
-      margin-top: 20px;
     }
 
     .btn {
       padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      border: none;
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
     }
 
     .btn-primary {
-      background: var(--primary);
+      background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
       color: white;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
     }
 
     .btn-primary:hover {
-      background: #1a73e8;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
     }
 
     .btn-secondary {
-      background: var(--bg);
+      background: var(--bg-secondary);
       color: var(--text);
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
-      background: var(--bg-secondary);
+      background: var(--border);
     }
 
-    /* Progress */
     .progress-container {
       display: none;
-      margin-top: 20px;
-      padding: 20px;
-      background: var(--bg-secondary);
-      border-radius: 12px;
+      margin-top: 24px;
     }
 
     .progress-container.active {
       display: block;
     }
 
-    .progress-steps {
-      display: flex;
-      justify-content: space-between;
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a73e8, #4285f4);
+      border-radius: 8px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-align: center;
       margin-bottom: 20px;
     }
 
+    .progress-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
     .progress-step {
-      flex: 1;
       text-align: center;
     }
 
-    .progress-step-circle {
+    .progress-step-icon {
       width: 40px;
       height: 40px;
+      margin: 0 auto 8px;
+      background: var(--bg-secondary);
       border-radius: 50%;
-      background: var(--border);
-      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 8px;
-      font-weight: 600;
+      color: var(--text-secondary);
       transition: all 0.3s;
     }
 
-    .progress-step.active .progress-step-circle {
-      background: var(--primary);
-      color: white;
+    .progress-step.active .progress-step-icon {
+      background: #E8F0FE;
+      color: var(--primary);
     }
 
-    .progress-step.complete .progress-step-circle {
-      background: var(--success);
-      color: white;
+    .progress-step.complete .progress-step-icon {
+      background: #E8F5E9;
+      color: var(--success);
     }
 
     .progress-step-label {
@@ -714,56 +681,36 @@
       color: var(--text-secondary);
     }
 
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--primary);
-      width: 0%;
-      transition: width 0.3s;
-    }
-
-    .progress-text {
-      font-size: 13px;
-      color: var(--text-secondary);
-      text-align: center;
-    }
-
-    /* Table */
-    .table-container {
-      overflow-x: auto;
-    }
-
-    table {
+    .invoices-table {
       width: 100%;
       border-collapse: collapse;
     }
 
-    thead th {
+    .invoices-table thead {
       background: var(--bg-secondary);
-      padding: 12px 16px;
+    }
+
+    .invoices-table th {
       text-align: left;
-      font-size: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border);
     }
 
-    tbody td {
+    .invoices-table td {
       padding: 16px;
       border-bottom: 1px solid var(--border);
-      font-size: 14px;
     }
 
-    tbody tr:hover {
+    .invoices-table tbody tr {
+      transition: background 0.2s;
+    }
+
+    .invoices-table tbody tr:hover {
       background: var(--bg-secondary);
     }
 
@@ -777,32 +724,52 @@
 
     .status-processed {
       background: #E8F5E9;
-      color: var(--success);
+      color: #34A853;
     }
 
     [data-theme="dark"] .status-processed {
-      background: rgba(52, 168, 83, 0.2);
+      background: #1E3A2E;
     }
 
-    /* Toast Notifications */
+    .view-all-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+
+    .view-all-link:hover {
+      gap: 8px;
+    }
+
     .toast-container {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      bottom: 24px;
+      right: 24px;
       z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .toast {
       background: white;
+      border-radius: 12px;
       padding: 16px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      margin-bottom: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       display: flex;
       align-items: center;
       gap: 12px;
-      min-width: 300px;
+      min-width: 320px;
       animation: slideIn 0.3s ease-out;
+    }
+
+    [data-theme="dark"] .toast {
+      background: #292A2D;
     }
 
     @keyframes slideIn {
@@ -817,8 +784,6 @@
     }
 
     .toast-icon {
-      width: 24px;
-      height: 24px;
       flex-shrink: 0;
     }
 
@@ -828,7 +793,6 @@
 
     .toast-title {
       font-weight: 600;
-      font-size: 14px;
       margin-bottom: 4px;
     }
 
@@ -837,62 +801,41 @@
       color: var(--text-secondary);
     }
 
-    .toast.success {
-      border-left: 4px solid var(--success);
-    }
-
-    .toast.error {
-      border-left: 4px solid var(--danger);
+    #fileInput {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- Setup Modal -->
-  <div class="setup-modal" id="setupModal">
+  <div id="setupModal" class="setup-modal">
     <div class="setup-content">
       <div class="setup-header">
         <div class="setup-header-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
           </svg>
         </div>
-        <h1>Welcome to Invoice System</h1>
-        <p>Connect your Google Sheet to get started</p>
+        <h1>Connect Your System</h1>
+        <p>Enter your Google Sheet and Drive Folder IDs to get started</p>
       </div>
-
+      
       <div class="setup-body">
-        <div class="info-banner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          <div class="info-banner-content">
-            <div class="info-banner-title">First Time Setup - 2 Simple Steps</div>
-            <div class="info-banner-text">
-              1. Copy the template and run "Initial Setup"<br>
-              2. Paste your Sheet ID and Folder ID below
-            </div>
-          </div>
-        </div>
-
         <div class="setup-step">
           <label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="9" y1="9" x2="15" y2="9"></line>
-              <line x1="9" y1="15" x2="15" y2="15"></line>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
-            Sheet ID
+            Google Sheet ID
           </label>
           <input 
             type="text" 
             id="sheetIdInput" 
-            placeholder="Paste Sheet ID or URL here"
+            placeholder="1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk"
           >
           <div class="help-text">
-            Find this in your Sheet's INSTRUCTIONS tab after running setup
+            The ID from your Google Sheet URL or paste the full URL
           </div>
         </div>
 
@@ -906,55 +849,45 @@
           <input 
             type="text" 
             id="folderIdInput" 
-            placeholder="Paste Folder ID or URL here"
+            placeholder="1VqFpY8KZ9X2mN7wL3cR4vB5tG6hJ8kP9"
           >
           <div class="help-text">
-            Also found in the INSTRUCTIONS tab of your copied Sheet
+            The ID from your Drive folder URL or paste the full URL
           </div>
         </div>
 
         <div class="setup-actions">
-          <button class="btn-setup secondary" onclick="openTemplateLink()">
+          <button class="btn-setup secondary" onclick="closeSetupModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-            Copy Template
+            Cancel
           </button>
           <button class="btn-setup primary" onclick="saveConfiguration()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            Save & Continue
+            Connect System
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <!-- Main App -->
   <div class="container">
-    <div class="header">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-          </svg>
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <img src="data:image/png;base64,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" alt="Invoice AI">
         </div>
-        <div class="logo-text">
-          <h1>Invoice Management System</h1>
+        <div class="header-title">
           <p>AI-Powered Invoice Processing</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="header-right">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -970,91 +903,73 @@
           <span class="status-dot"></span>
           System Ready
         </div>
-        <button class="btn-settings" onclick="showSetupModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="settings-btn" onclick="showSetupModal()" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 1v6m0 6v6"></path>
+            <path d="M12 1v6m0 6v6m0-6h6m-6 0H6m3-6.5l-4.33 2.5m8.66 5l4.33 2.5m0-10l-4.33 2.5m-8.66 5L1.5 17"></path>
           </svg>
-          Settings
         </button>
       </div>
-    </div>
+    </header>
 
-    <!-- Metrics -->
     <div class="metrics-grid">
       <div class="metric-card">
-        <div class="metric-header">
-          <div class="metric-icon" style="background: #E8F0FE; color: #4285F4;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-          </div>
+        <div class="metric-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
         </div>
         <div class="metric-value" id="totalInvoices">0</div>
         <div class="metric-label">Total Invoices</div>
-        <div class="metric-change positive">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-            <polyline points="18 15 12 9 6 15"></polyline>
-          </svg>
-          This month
-        </div>
+        <span class="metric-change">↑ This month</span>
       </div>
 
       <div class="metric-card">
-        <div class="metric-header">
-          <div class="metric-icon" style="background: #E8F5E9; color: #34A853;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-          </div>
+        <div class="metric-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
         </div>
         <div class="metric-value" id="totalAmount">₪0</div>
         <div class="metric-label">Total Amount</div>
-        <div class="metric-change positive">All invoices</div>
+        <span class="metric-change">All invoices</span>
       </div>
 
       <div class="metric-card">
-        <div class="metric-header">
-          <div class="metric-icon" style="background: #FDE7E9; color: #EA4335;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
-          </div>
+        <div class="metric-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
         </div>
-        <div class="metric-value" id="successRate">100%</div>
+        <div class="metric-value" id="successRate">0%</div>
         <div class="metric-label">Success Rate</div>
-        <div class="metric-change positive">Processing accuracy</div>
+        <span class="metric-change">Processing accuracy</span>
       </div>
 
       <div class="metric-card">
-        <div class="metric-header">
-          <div class="metric-icon" style="background: #FFF3E0; color: #FBBC04;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-          </div>
+        <div class="metric-icon yellow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
         </div>
         <div class="metric-value" id="avgProcessing">45s</div>
         <div class="metric-label">Avg. Processing</div>
-        <div class="metric-change positive">Fast processing</div>
+        <span class="metric-change">Fast processing</span>
       </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-      <!-- Upload Section -->
-      <div class="upload-section">
-        <div class="section-header">
-          <h2 class="section-title">Upload Invoice</h2>
+      <div class="card upload-section">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Upload Invoice</div>
+            <div class="card-subtitle">Drag and drop or choose a file to process</div>
+          </div>
         </div>
-        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
-          Drag and drop or choose a file to process
-        </p>
+
         <div class="upload-area" id="uploadArea">
           <div class="upload-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1063,105 +978,122 @@
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
           </div>
-          <h3>Upload Invoice Document</h3>
-          <p>Supported formats: PDF, JPG, PNG (Max 10MB)</p>
+          <div class="upload-title">Upload Invoice Document</div>
+          <div class="upload-subtitle">Supported formats: PDF, JPG, PNG (Max 10MB)</div>
+          <div class="upload-buttons">
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Choose File
+            </button>
+            <button class="btn btn-secondary" onclick="takePhoto()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              Take Photo
+            </button>
+          </div>
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
         </div>
-        <div class="upload-buttons">
-          <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-            Choose File
-          </button>
-          <button class="btn btn-secondary" onclick="takePhoto()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-              <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-            Take Photo
-          </button>
-        </div>
-        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileSelect(event)">
-        
-        <div class="progress-container" id="progressContainer">
+
+        <div id="progressContainer" class="progress-container">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div id="progressText" class="progress-text">Processing...</div>
           <div class="progress-steps">
             <div class="progress-step" data-step="1">
-              <div class="progress-step-circle">1</div>
+              <div class="progress-step-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
               <div class="progress-step-label">Upload</div>
             </div>
             <div class="progress-step" data-step="2">
-              <div class="progress-step-circle">2</div>
+              <div class="progress-step-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </div>
               <div class="progress-step-label">Extract</div>
             </div>
             <div class="progress-step" data-step="3">
-              <div class="progress-step-circle">3</div>
+              <div class="progress-step-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
               <div class="progress-step-label">Validate</div>
             </div>
             <div class="progress-step" data-step="4">
-              <div class="progress-step-circle">4</div>
+              <div class="progress-step-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                  <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                  <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+              </div>
               <div class="progress-step-label">Save</div>
             </div>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="progress-text" id="progressText">Processing...</div>
         </div>
       </div>
 
-      <!-- Recent Invoices -->
-      <div class="invoices-section">
-        <div class="section-header">
-          <h2 class="section-title">Recent Invoices</h2>
-          <button class="btn-link" onclick="openDriveFolder()">
+      <div class="card invoices-section">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recent Invoices</div>
+            <div class="card-subtitle">Last 10 processed invoices</div>
+          </div>
+          <a href="#" class="view-all-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
             </svg>
             View All
-          </button>
+          </a>
         </div>
-        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">
-          Last 10 processed invoices
-        </p>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Vendor</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="invoicesTableBody">
-              <tr>
-                <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 40px;">
-                  No invoices yet. Upload your first invoice to get started!
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+
+        <table class="invoices-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="invoicesTableBody">
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                No invoices yet. Upload your first invoice to get started!
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
+  <div id="toastContainer" class="toast-container"></div>
+
   <script>
     const CONFIG = {
-      N8N_WEBHOOK_URL: "https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook-test/PJ30-yehuda",
-      TEMPLATE_URL: "https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy",
-      // URL del Apps Script CENTRALIZADO (una sola URL para TODOS los usuarios)
-      // IMPORTANTE: Actualiza esto después de deployar el script centralizado
-      CENTRAL_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwWjI5W6tpTB3HDStYtuPWd_kj9wYaNUqFojuY0bDgPfXxEcJG6qgZlJfU0PBQHwm-uJg/exec"
+      N8N_WEBHOOK_URL: 'https://ashir7ai.app.n8n.cloud/webhook/9bc0e9c6-d07f-4e12-a89c-b32acf52e31a',
+      CENTRAL_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxaVhQWJGD6eZJP0l71MUr3P4OvQShVxYAOUWkk4a3xXgkG1EXhtmMy4CPcRYE0pfhD/exec'
     };
 
     let currentInvoiceId = null;
 
-    // Theme Management
     function initTheme() {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcon();
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      updateThemeIcon(theme);
     }
 
     function toggleTheme() {
@@ -1169,12 +1101,11 @@
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      updateThemeIcon();
+      updateThemeIcon(newTheme);
     }
 
-    function updateThemeIcon() {
-      const theme = document.documentElement.getAttribute('data-theme');
-      const icon = document.querySelector('#themeToggle svg');
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('themeIcon');
       if (theme === 'dark') {
         icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
       } else {
@@ -1182,86 +1113,54 @@
       }
     }
 
-    // Configuration Management
-    function checkConfiguration() {
-      const sheetId = localStorage.getItem('userSheetId');
-      const folderId = localStorage.getItem('userFolderId');
-      
-      if (!sheetId || !folderId) {
-        showSetupModal();
-        return false;
-      }
-      
-      loadDashboard();
-      return true;
-    }
-
     function showSetupModal() {
-      document.getElementById('setupModal').classList.add('active');
+      const modal = document.getElementById('setupModal');
+      modal.classList.add('active');
+      
       const sheetId = localStorage.getItem('userSheetId') || '';
       const folderId = localStorage.getItem('userFolderId') || '';
       document.getElementById('sheetIdInput').value = sheetId;
       document.getElementById('folderIdInput').value = folderId;
     }
 
-    function hideSetupModal() {
+    function closeSetupModal() {
       document.getElementById('setupModal').classList.remove('active');
     }
 
-    function openTemplateLink() {
-      window.open(CONFIG.TEMPLATE_URL, '_blank');
-    }
-
     function saveConfiguration() {
-      const sheetIdInput = document.getElementById('sheetIdInput').value.trim();
-      const folderIdInput = document.getElementById('folderIdInput').value.trim();
+      const sheetInput = document.getElementById('sheetIdInput').value.trim();
+      const folderInput = document.getElementById('folderIdInput').value.trim();
       
-      if (!sheetIdInput || !folderIdInput) {
-        showToast('Configuration Error', 'Please enter both Sheet ID and Folder ID', 'error');
+      if (!sheetInput || !folderInput) {
+        showToast('Missing Information', 'Please enter both Sheet ID and Folder ID', 'error');
         return;
       }
-      
-      // Extract clean IDs (handles URLs or IDs)
-      const sheetId = extractGoogleId(sheetIdInput);
-      const folderId = extractGoogleId(folderIdInput);
-      
-      if (!sheetId || !folderId) {
-        showToast('Invalid ID', 'Could not extract valid IDs. Please check your input.', 'error');
-        return;
-      }
-      
-      // Validate that they look like Google IDs
-      if (sheetId.length < 20 || folderId.length < 20) {
-        showToast('Invalid ID', 'IDs seem too short. Please check your Sheet ID and Folder ID.', 'error');
-        return;
-      }
+
+      const sheetId = extractGoogleId(sheetInput);
+      const folderId = extractGoogleId(folderInput);
       
       localStorage.setItem('userSheetId', sheetId);
       localStorage.setItem('userFolderId', folderId);
       
-      console.log('Saved Sheet ID:', sheetId);
-      console.log('Saved Folder ID:', folderId);
-      console.log('Using Central Apps Script URL:', CONFIG.CENTRAL_APPS_SCRIPT_URL);
-      
-      hideSetupModal();
-      showToast('Configuration Saved', 'Your system is now configured and ready to use', 'success');
+      closeSetupModal();
+      showToast('Configuration Saved', 'Your system is now ready to process invoices', 'success');
       loadDashboard();
     }
 
-    function openDriveFolder() {
+    function checkConfiguration() {
+      const sheetId = localStorage.getItem('userSheetId');
       const folderId = localStorage.getItem('userFolderId');
-      if (!folderId) {
-        showToast('Configuration Required', 'Please configure your system first', 'error');
+      
+      if (!sheetId || !folderId) {
         showSetupModal();
-        return;
+      } else {
+        loadDashboard();
       }
-      window.open(`https://drive.google.com/drive/folders/${folderId}`, '_blank');
     }
 
-    // Dashboard Management
-    function loadDashboard() {
-      loadMetrics();
-      loadRecentInvoices();
+    async function loadDashboard() {
+      await loadMetrics();
+      await loadRecentInvoices();
     }
 
     async function loadMetrics() {
@@ -1318,7 +1217,6 @@
       }
     }
 
-    // File Upload
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (file) {
@@ -1336,7 +1234,6 @@
         return;
       }
 
-      // Get initial count
       let initialCount = 0;
       try {
         console.log('Getting initial invoice count...');
@@ -1397,7 +1294,6 @@
           progressFill.style.width = '90%';
           progressText.textContent = 'Saving to database...';
 
-          // Wait for processing
           const processed = await waitForProcessing(initialCount);
 
           if (processed) {
@@ -1481,7 +1377,6 @@
       });
     }
 
-    // Toast Notifications
     function showToast(title, message, type = 'success') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
@@ -1509,7 +1404,6 @@
       }, 4000);
     }
 
-    // Utility Functions
     function generateUUID() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0;
@@ -1518,30 +1412,25 @@
       });
     }
 
-    // Extract ID from Google URL or return as-is if already an ID
     function extractGoogleId(input) {
       if (!input) return '';
       
       input = input.trim();
       
-      // If it's already a clean ID (no slashes or https), return it
       if (!input.includes('/') && !input.includes('http')) {
         return input;
       }
       
-      // Extract Sheet ID from URL
       const sheetMatch = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
       if (sheetMatch) {
         return sheetMatch[1];
       }
       
-      // Extract Folder ID from URL
       const folderMatch = input.match(/\/folders\/([a-zA-Z0-9-_]+)/);
       if (folderMatch) {
         return folderMatch[1];
       }
       
-      // If no pattern matched, return original (might be a valid ID)
       return input;
     }
 
@@ -1549,7 +1438,25 @@
       showToast('Coming Soon', 'Camera feature will be available in the next update', 'success');
     }
 
-    // Initialize
+    const uploadArea = document.getElementById('uploadArea');
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('drag-over');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('drag-over');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        uploadInvoice(files[0]);
+      }
+    });
+
     window.addEventListener('load', () => {
       initTheme();
       checkConfiguration();
