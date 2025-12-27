@@ -1475,8 +1475,6 @@
 
         document.getElementById('totalInvoices').textContent = data.totalInvoices || 0;
         document.getElementById('totalAmount').textContent = data.totalAmount || '₪0';
-        document.getElementById('successRate').textContent = data.successRate || '0%';
-        document.getElementById('avgProcessing').textContent = data.avgProcessing || '0s';
       } catch (error) {
         console.error('Error loading metrics:', error);
       }
@@ -1794,8 +1792,10 @@
       // Update button states
       document.querySelectorAll('.chart-btn').forEach(btn => {
         btn.classList.remove('active');
+        if (btn.textContent.toLowerCase() === period.toLowerCase()) {
+          btn.classList.add('active');
+        }
       });
-      event.target.classList.add('active');
       
       const sheetId = localStorage.getItem('userSheetId');
       if (!sheetId) return;
