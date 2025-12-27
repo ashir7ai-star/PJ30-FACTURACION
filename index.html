@@ -938,7 +938,100 @@
     #fileInput {
       display: none;
     }
+
+    /* Chart Card Styles */
+    .chart-card {
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 24px;
+      grid-column: span 2;
+      transition: all 0.3s;
+    }
+
+    [data-theme="dark"] .chart-card {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .chart-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .chart-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chart-btn {
+      padding: 6px 16px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chart-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .chart-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+      .chart-card {
+        grid-column: span 1;
+      }
+      
+      .chart-container {
+        height: 240px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .chart-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      
+      .chart-controls {
+        width: 100%;
+      }
+      
+      .chart-btn {
+        flex: 1;
+      }
+    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div id="setupModal" class="setup-modal">
@@ -1138,27 +1231,18 @@
         <span class="metric-change">All invoices</span>
       </div>
 
-      <div class="metric-card">
-        <div class="metric-icon red">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-          </svg>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Invoice Activity</div>
+          <div class="chart-controls">
+            <button class="chart-btn active" onclick="loadChartData('week')">Week</button>
+            <button class="chart-btn" onclick="loadChartData('month')">Month</button>
+            <button class="chart-btn" onclick="loadChartData('year')">Year</button>
+          </div>
         </div>
-        <div class="metric-value" id="successRate">0%</div>
-        <div class="metric-label">Success Rate</div>
-        <span class="metric-change">Processing accuracy</span>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-icon yellow">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
+        <div class="chart-container">
+          <canvas id="invoiceChart"></canvas>
         </div>
-        <div class="metric-value" id="avgProcessing">45s</div>
-        <div class="metric-label">Avg. Processing</div>
-        <span class="metric-change">Fast processing</span>
       </div>
     </div>
 
@@ -1370,6 +1454,7 @@
     async function loadDashboard() {
       await loadMetrics();
       await loadRecentInvoices();
+      await loadInitialChart();
     }
 
     async function loadMetrics() {
@@ -1697,6 +1782,119 @@
       showToast('Refreshing', 'Loading latest data...', 'success');
       loadDashboard();
       toggleQuickActions();
+    }
+
+    // Chart functionality
+    let invoiceChart = null;
+    let currentPeriod = 'week';
+
+    async function loadChartData(period) {
+      currentPeriod = period;
+      
+      // Update button states
+      document.querySelectorAll('.chart-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      const sheetId = localStorage.getItem('userSheetId');
+      if (!sheetId) return;
+      
+      try {
+        const response = await fetch(`${CONFIG.CENTRAL_APPS_SCRIPT_URL}?action=chartData&sheetId=${sheetId}&period=${period}`);
+        const data = await response.json();
+        
+        if (data.labels && data.values) {
+          createChart(data.labels, data.values);
+        }
+      } catch (error) {
+        console.error('Error loading chart data:', error);
+      }
+    }
+
+    function createChart(labels, data) {
+      const ctx = document.getElementById('invoiceChart');
+      
+      if (invoiceChart) {
+        invoiceChart.destroy();
+      }
+      
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+      const textColor = isDark ? '#E8EAED' : '#202124';
+      
+      invoiceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Invoices Processed',
+            data: data,
+            backgroundColor: 'rgba(66, 133, 244, 0.8)',
+            borderColor: 'rgba(66, 133, 244, 1)',
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: isDark ? '#292A2D' : '#FFFFFF',
+              titleColor: textColor,
+              bodyColor: textColor,
+              borderColor: gridColor,
+              borderWidth: 1,
+              padding: 12,
+              displayColors: false,
+              callbacks: {
+                title: function(context) {
+                  return context[0].label;
+                },
+                label: function(context) {
+                  return `${context.parsed.y} invoice${context.parsed.y !== 1 ? 's' : ''}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                color: textColor,
+                font: {
+                  size: 11
+                }
+              },
+              grid: {
+                color: gridColor,
+                drawBorder: false
+              }
+            },
+            x: {
+              ticks: {
+                color: textColor,
+                font: {
+                  size: 11
+                }
+              },
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    async function loadInitialChart() {
+      await loadChartData('week');
     }
 
     function viewAllInvoices() {
