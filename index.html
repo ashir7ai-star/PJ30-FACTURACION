@@ -1799,8 +1799,8 @@
       
       const sheetId = localStorage.getItem('userSheetId');
       if (!sheetId) {
-        // Show demo data if not configured
-        showDemoChart(period);
+        console.warn('⚠️ No Sheet ID configured');
+        createEmptyChart(period);
         return;
       }
       
@@ -1809,38 +1809,34 @@
         const data = await response.json();
         
         if (data.labels && data.values) {
+          console.log('✅ Real data from Sheet:', data);
           createChart(data.labels, data.values);
         } else {
-          // Fallback to demo data if API doesn't return data
-          console.log('No chart data from API, showing demo data');
-          showDemoChart(period);
+          console.warn('⚠️ No data returned from API');
+          createEmptyChart(period);
         }
       } catch (error) {
-        console.error('Error loading chart data:', error);
-        // Fallback to demo data on error
-        showDemoChart(period);
+        console.error('❌ Error loading chart data:', error);
+        createEmptyChart(period);
       }
     }
 
-    function showDemoChart(period) {
+    function createEmptyChart(period) {
       let labels, values;
       
       if (period === 'week') {
-        // Last 7 days
         labels = [];
         values = [];
         for (let i = 6; i >= 0; i--) {
           const date = new Date();
           date.setDate(date.getDate() - i);
           labels.push(`${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`);
-          values.push(Math.floor(Math.random() * 3)); // Random 0-2
+          values.push(0);
         }
       } else if (period === 'month') {
-        // Last 4 weeks
         labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-        values = [2, 3, 1, 2];
+        values = [0, 0, 0, 0];
       } else {
-        // Last 12 months
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const now = new Date();
         labels = [];
@@ -1849,10 +1845,11 @@
           const date = new Date(now);
           date.setMonth(date.getMonth() - i);
           labels.push(`${months[date.getMonth()]} ${date.getFullYear()}`);
-          values.push(Math.floor(Math.random() * 5)); // Random 0-4
+          values.push(0);
         }
       }
       
+      console.log('📊 Showing empty chart (no real data available)');
       createChart(labels, values);
     }
 
