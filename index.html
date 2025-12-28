@@ -35,24 +35,16 @@
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
       background: var(--bg-secondary);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.4;
       transition: background-color 0.3s, color 0.3s;
       margin: 0;
       padding: 0;
-      height: 100vh;
-      overflow: hidden;
     }
 
     .container {
-      max-width: 100%;
-      height: 100vh;
+      max-width: 1600px;
       margin: 0 auto;
-      padding: 1vh 1.5vw;
-      display: grid;
-      grid-template-rows: 8vh 16vh 28vh 1fr;
-      gap: 1vh;
-      overflow: hidden;
-      box-sizing: border-box;
+      padding: 8px;
     }
 
     @media (max-width: 1024px) {
@@ -561,8 +553,8 @@
     }
 
     .metric-icon {
-      width: 4vh;
-      height: 4vh;
+      width: 32px;
+      height: 32px;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -1046,44 +1038,6 @@
       
       .chart-btn {
         flex: 1;
-      }
-    }
-
-    /* Tablets and mobile - stack vertically */
-    @media (max-width: 1023px) {
-      .container {
-        grid-template-rows: 10vh 20vh auto 1fr;
-        padding: 1vh 2vw;
-      }
-      
-      .main-content,
-      .bottom-content {
-        grid-template-columns: 1fr;
-      }
-      
-      .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .logo img {
-        height: 6vh;
-      }
-      
-      .metric-value {
-        font-size: 4vh;
-      }
-    }
-
-    /* Very large screens */
-    @media (min-width: 1920px) {
-      .container {
-        max-width: 1800px;
-      }
-    }
-
-    @media (min-width: 2560px) {
-      .container {
-        max-width: 2200px;
       }
     }
   </style>
