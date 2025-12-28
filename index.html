@@ -37,15 +37,20 @@
       color: var(--text);
       line-height: 1.6;
       transition: background-color 0.3s, color 0.3s;
-      min-height: 100vh;
-      overflow-x: hidden;
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
     }
 
     .container {
       max-width: 100%;
-      width: 100%;
       margin: 0 auto;
-      padding: clamp(12px, 2vw, 20px);
+      padding: clamp(8px, 1.5vh, 16px);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     @media (max-width: 1024px) {
@@ -818,6 +823,14 @@
       color: var(--text-secondary);
     }
 
+    .invoice-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
+      margin-top: clamp(8px, 1.5vh, 12px);
+    }
+    
     .invoices-table {
       width: 100%;
       border-collapse: collapse;
@@ -1005,7 +1018,7 @@
 
     .chart-container {
       position: relative;
-      height: clamp(220px, 25vh, 320px);
+      height: 280px;
       width: 100%;
     }
 
@@ -1035,57 +1048,91 @@
       }
     }
 
-    /* Responsive optimizations */
-    
-    /* Laptop optimization (1024px - 1440px) */
+    /* ========================================
+       RESPONSIVE DESIGN - FIT TO SCREEN
+       ======================================== */
+
+    /* Laptop (1024px - 1440px) */
     @media (min-width: 1024px) and (max-width: 1440px) {
       .container {
-        padding: 16px 20px;
         max-width: 1400px;
+        padding: clamp(10px, 1.5vh, 14px);
+      }
+      
+      .metrics-grid {
+        gap: clamp(10px, 1.5vh, 12px);
+      }
+      
+      .main-content {
+        max-height: 28vh;
       }
       
       .chart-container {
-        height: clamp(240px, 22vh, 280px);
+        height: clamp(160px, 20vh, 240px);
       }
     }
 
-    /* Tablet optimization (768px - 1023px) */
-    @media (min-width: 768px) and (max-width: 1023px) {
-      .container {
-        padding: 14px;
-      }
-      
-      .chart-container {
-        height: clamp(200px, 20vh, 240px);
-      }
-    }
-
-    @media (min-width: 1441px) {
+    /* Desktop (1441px - 1919px) */
+    @media (min-width: 1441px) and (max-width: 1919px) {
       .container {
         max-width: 1600px;
-        padding: 20px 24px;
-      }
-    }
-
-    @media (min-width: 1920px) {
-      .container {
-        max-width: 1800px;
-        padding: 24px 32px;
+        padding: clamp(12px, 1.8vh, 16px);
       }
       
-      .metric-value {
-        font-size: clamp(40px, 4vw, 56px);
+      .main-content {
+        max-height: 30vh;
       }
     }
 
+    /* Full HD / 24" Monitors (1920px - 2559px) */
+    @media (min-width: 1920px) and (max-width: 2559px) {
+      .container {
+        max-width: 1800px;
+        padding: clamp(14px, 2vh, 18px);
+      }
+      
+      .main-content {
+        max-height: 32vh;
+      }
+      
+      .chart-container {
+        height: clamp(200px, 24vh, 300px);
+      }
+    }
+
+    /* 4K / 27"+ Monitors (2560px+) */
     @media (min-width: 2560px) {
       .container {
         max-width: 2200px;
-        padding: 32px 48px;
+        padding: clamp(16px, 2.5vh, 20px);
+      }
+      
+      .main-content {
+        max-height: 34vh;
       }
       
       .chart-container {
-        height: clamp(340px, 30vh, 420px);
+        height: clamp(220px, 26vh, 340px);
+      }
+      
+      .metric-value {
+        font-size: clamp(36px, 4.5vw, 52px);
+      }
+    }
+
+    /* Tablets and smaller */
+    @media (max-width: 1023px) {
+      .main-content {
+        grid-template-columns: 1fr;
+        max-height: none;
+      }
+      
+      .bottom-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -1402,6 +1449,7 @@
           </a>
         </div>
 
+        <div class="invoice-table-wrapper">
         <table class="invoices-table">
           <thead>
             <tr>
@@ -1419,6 +1467,7 @@
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   </div>
