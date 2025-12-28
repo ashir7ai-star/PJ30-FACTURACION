@@ -39,31 +39,18 @@
       transition: background-color 0.3s, color 0.3s;
       min-height: 100vh;
       overflow-x: hidden;
-      scroll-behavior: smooth;
     }
 
     .container {
-      max-width: 1600px;
+      max-width: 100%;
       width: 100%;
       margin: 0 auto;
       padding: clamp(12px, 2vw, 20px);
     }
 
-    @media (min-width: 1600px) {
-      .container {
-        max-width: 1600px;
-      }
-    }
-
-    @media (max-width: 1400px) {
-      .container {
-        padding: 16px;
-      }
-    }
-
     @media (max-width: 1024px) {
       .container {
-        padding: 14px;
+        padding: 12px;
       }
       
       .main-content {
@@ -1042,44 +1029,30 @@
       .chart-controls {
         width: 100%;
       }
+      
+      .chart-btn {
+        flex: 1;
+      }
+    }
 
-    /* Optimización para laptops (1024px - 1440px) */
+    /* Responsive optimizations */
+    
+    /* Laptop optimization (1024px - 1440px) */
     @media (min-width: 1024px) and (max-width: 1440px) {
       .container {
         padding: 16px 20px;
-      }
-      
-      .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
+        max-width: 1400px;
       }
       
       .chart-container {
         height: clamp(240px, 22vh, 280px);
       }
-      
-      .header {
-        padding: 14px 0;
-        margin-bottom: 20px;
-      }
     }
 
-    
-    /* Optimización para tablets (768px - 1023px) */
+    /* Tablet optimization (768px - 1023px) */
     @media (min-width: 768px) and (max-width: 1023px) {
       .container {
         padding: 14px;
-      }
-      
-      .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .main-content {
-        grid-template-columns: 1fr;
-      }
-      
-      .bottom-content {
-        grid-template-columns: 1fr;
       }
       
       .chart-container {
@@ -1087,24 +1060,32 @@
       }
     }
 
-    /* Optimización para monitores grandes (>1440px) */
     @media (min-width: 1441px) {
       .container {
         max-width: 1600px;
         padding: 20px 24px;
       }
+    }
+
+    @media (min-width: 1920px) {
+      .container {
+        max-width: 1800px;
+        padding: 24px 32px;
+      }
       
-      .main-content {
-        gap: 20px;
+      .metric-value {
+        font-size: clamp(40px, 4vw, 56px);
+      }
+    }
+
+    @media (min-width: 2560px) {
+      .container {
+        max-width: 2200px;
+        padding: 32px 48px;
       }
       
       .chart-container {
-        height: clamp(260px, 26vh, 340px);
-      }
-    }
-      
-      .chart-btn {
-        flex: 1;
+        height: clamp(340px, 30vh, 420px);
       }
     }
   </style>
@@ -2081,42 +2062,6 @@
     window.addEventListener('load', () => {
       initTheme();
       checkConfiguration();
-    }
-
-    /* Optimización para pantallas muy grandes (27"+ / 2K/4K) */
-    @media (min-width: 1920px) {
-      .container {
-        max-width: 1800px;
-        padding: 24px 32px;
-      }
-      
-      .main-content {
-        gap: 24px;
-      }
-      
-      .metrics-grid {
-        gap: 20px;
-      }
-      
-      .chart-container {
-        height: clamp(300px, 28vh, 380px);
-      }
-      
-      .metric-value {
-        font-size: clamp(40px, 4vw, 56px);
-      }
-    }
-    
-    /* Optimización para 4K y ultra-wide */
-    @media (min-width: 2560px) {
-      .container {
-        max-width: 2200px;
-        padding: 32px 48px;
-      }
-      
-      .chart-container {
-        height: clamp(340px, 30vh, 420px);
-      }
     });
   </script>
 </body>
