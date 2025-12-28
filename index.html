@@ -37,19 +37,20 @@
       color: var(--text);
       line-height: 1.6;
       transition: background-color 0.3s, color 0.3s;
-      height: 100vh;
-      overflow: hidden;
       margin: 0;
       padding: 0;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .container {
       max-width: 100%;
-      margin: 0 auto;
-      padding: clamp(8px, 1.5vh, 16px);
       height: 100vh;
-      display: flex;
-      flex-direction: column;
+      margin: 0 auto;
+      padding: 12px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 12px;
       overflow: hidden;
     }
 
@@ -823,12 +824,11 @@
       color: var(--text-secondary);
     }
 
-    .invoice-table-wrapper {
+    .invoices-table-wrapper {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
       min-height: 0;
-      margin-top: clamp(8px, 1.5vh, 12px);
     }
     
     .invoices-table {
@@ -1048,85 +1048,76 @@
       }
     }
 
-    /* ========================================
-       RESPONSIVE DESIGN - FIT TO SCREEN
-       ======================================== */
-
-    /* Laptop (1024px - 1440px) */
+    /* Responsive adjustments */
     @media (min-width: 1024px) and (max-width: 1440px) {
       .container {
-        max-width: 1400px;
-        padding: clamp(10px, 1.5vh, 14px);
+        padding: 10px;
+        gap: 10px;
       }
       
-      .metrics-grid {
-        gap: clamp(10px, 1.5vh, 12px);
-      }
-      
-      .main-content {
-        max-height: 28vh;
+      .metric-card,
+      .chart-card,
+      .upload-section,
+      .recent-section {
+        padding: 14px;
       }
       
       .chart-container {
-        height: clamp(160px, 20vh, 240px);
+        height: 180px;
+      }
+      
+      .logo img {
+        height: 70px;
       }
     }
 
-    /* Desktop (1441px - 1919px) */
     @media (min-width: 1441px) and (max-width: 1919px) {
       .container {
         max-width: 1600px;
-        padding: clamp(12px, 1.8vh, 16px);
+        padding: 14px;
       }
       
-      .main-content {
-        max-height: 30vh;
+      .chart-container {
+        height: 220px;
       }
     }
 
-    /* Full HD / 24" Monitors (1920px - 2559px) */
     @media (min-width: 1920px) and (max-width: 2559px) {
       .container {
         max-width: 1800px;
-        padding: clamp(14px, 2vh, 18px);
-      }
-      
-      .main-content {
-        max-height: 32vh;
+        padding: 16px;
       }
       
       .chart-container {
-        height: clamp(200px, 24vh, 300px);
-      }
-    }
-
-    /* 4K / 27"+ Monitors (2560px+) */
-    @media (min-width: 2560px) {
-      .container {
-        max-width: 2200px;
-        padding: clamp(16px, 2.5vh, 20px);
-      }
-      
-      .main-content {
-        max-height: 34vh;
-      }
-      
-      .chart-container {
-        height: clamp(220px, 26vh, 340px);
+        height: 240px;
       }
       
       .metric-value {
-        font-size: clamp(36px, 4.5vw, 52px);
+        font-size: 42px;
       }
     }
 
-    /* Tablets and smaller */
-    @media (max-width: 1023px) {
-      .main-content {
-        grid-template-columns: 1fr;
-        max-height: none;
+    @media (min-width: 2560px) {
+      .container {
+        max-width: 2000px;
+        padding: 18px;
       }
       
+      .chart-container {
+        height: 260px;
+      }
+      
+      .metric-value {
+        font-size: 48px;
+      }
+      
+      .logo img {
+        height: 90px;
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .main-content,
       .bottom-content {
         grid-template-columns: 1fr;
       }
@@ -1449,8 +1440,8 @@
           </a>
         </div>
 
-        <div class="invoice-table-wrapper">
-        <table class="invoices-table">
+        <div class="invoices-table-wrapper">
+          <table class="invoices-table">
           <thead>
             <tr>
               <th>Vendor</th>
@@ -1467,7 +1458,7 @@
             </tr>
           </tbody>
         </table>
-        </div>
+          </div>
       </div>
     </div>
   </div>
