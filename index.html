@@ -47,11 +47,12 @@
       max-width: 100%;
       height: 100vh;
       margin: 0 auto;
-      padding: 12px;
+      padding: 1vh 1.5vw;
       display: grid;
-      grid-template-rows: auto auto auto 1fr;
-      gap: 12px;
+      grid-template-rows: 8vh 16vh 28vh 1fr;
+      gap: 1vh;
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     @media (max-width: 1024px) {
@@ -560,8 +561,8 @@
     }
 
     .metric-icon {
-      width: 48px;
-      height: 48px;
+      width: 4vh;
+      height: 4vh;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -1048,75 +1049,13 @@
       }
     }
 
-    /* Responsive adjustments */
-    @media (min-width: 1024px) and (max-width: 1440px) {
-      .container {
-        padding: 10px;
-        gap: 10px;
-      }
-      
-      .metric-card,
-      .chart-card,
-      .upload-section,
-      .recent-section {
-        padding: 14px;
-      }
-      
-      .chart-container {
-        height: 180px;
-      }
-      
-      .logo img {
-        height: 70px;
-      }
-    }
-
-    @media (min-width: 1441px) and (max-width: 1919px) {
-      .container {
-        max-width: 1600px;
-        padding: 14px;
-      }
-      
-      .chart-container {
-        height: 220px;
-      }
-    }
-
-    @media (min-width: 1920px) and (max-width: 2559px) {
-      .container {
-        max-width: 1800px;
-        padding: 16px;
-      }
-      
-      .chart-container {
-        height: 240px;
-      }
-      
-      .metric-value {
-        font-size: 42px;
-      }
-    }
-
-    @media (min-width: 2560px) {
-      .container {
-        max-width: 2000px;
-        padding: 18px;
-      }
-      
-      .chart-container {
-        height: 260px;
-      }
-      
-      .metric-value {
-        font-size: 48px;
-      }
-      
-      .logo img {
-        height: 90px;
-      }
-    }
-
+    /* Tablets and mobile - stack vertically */
     @media (max-width: 1023px) {
+      .container {
+        grid-template-rows: 10vh 20vh auto 1fr;
+        padding: 1vh 2vw;
+      }
+      
       .main-content,
       .bottom-content {
         grid-template-columns: 1fr;
@@ -1124,6 +1063,27 @@
       
       .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .logo img {
+        height: 6vh;
+      }
+      
+      .metric-value {
+        font-size: 4vh;
+      }
+    }
+
+    /* Very large screens */
+    @media (min-width: 1920px) {
+      .container {
+        max-width: 1800px;
+      }
+    }
+
+    @media (min-width: 2560px) {
+      .container {
+        max-width: 2200px;
       }
     }
   </style>
