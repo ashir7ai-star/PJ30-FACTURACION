@@ -1281,6 +1281,13 @@
               Refresh Data
             </div>
 
+            <div class="quick-actions-item" onclick="refreshDashboardData(); toggleQuickActions();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
+              </svg>
+              Refresh Data
+            </div>
+
             <div class="quick-actions-divider"></div>
 
             <div class="quick-actions-item" onclick="showSetupModal(); toggleQuickActions();">
@@ -1552,6 +1559,15 @@
       }
     }
 
+
+    function refreshDashboardData() {
+      showToast('Refreshing...', 'Updating dashboard data', 'info');
+      loadDashboard();
+      setTimeout(() => {
+        showToast('Updated', 'Dashboard data refreshed successfully', 'success');
+      }, 1000);
+    }
+
     async function loadDashboard() {
       await loadMetrics();
       await loadRecentInvoices();
@@ -1679,7 +1695,7 @@
           updateProgressStep(3, 'active');
           progressFill.style.width = '75%';
           progressText.textContent = 'Validating information...';
-        }, 1500);
+        }, 800);
 
         setTimeout(async () => {
           updateProgressStep(3, 'complete');
@@ -1705,8 +1721,8 @@
             progressContainer.classList.remove('active');
             resetProgressSteps();
             loadDashboard();
-          }, 2000);
-        }, 3000);
+          }, 1000);
+        }, 500);
 
       } catch (error) {
         console.error('Upload error:', error);
@@ -1715,12 +1731,12 @@
         setTimeout(() => {
           progressContainer.classList.remove('active');
           resetProgressSteps();
-        }, 3000);
+        }, 500);
       }
     }
 
     async function waitForProcessing(initialCount) {
-      const maxAttempts = 15;
+      const maxAttempts = 20;
       let attempts = 0;
       const sheetId = localStorage.getItem('userSheetId');
 
