@@ -602,8 +602,8 @@
     }
 
     .metric-icon svg {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
     }
 
     .metric-icon.blue {
@@ -627,18 +627,20 @@
     }
 
     .metric-value {
-      font-size: 32px;
+      font-size: 26px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
+      line-height: 1.1;
     }
 
     .metric-label {
-      font-size: 13px;
+      font-size: 11px;
       color: var(--text-secondary);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      line-height: 1.2;
     }
 
     .metric-change {
@@ -998,7 +1000,7 @@
       background: var(--bg);
       border-radius: 16px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      padding: 24px;
+      padding: 16px;
       /* grid-column: span 2; Removed for adaptive grid */
       transition: all 0.3s;
     }
@@ -1066,7 +1068,7 @@
       }
 
       .chart-container {
-        height: 240px;
+        height: 200px;
       }
     }
 
@@ -1301,46 +1303,6 @@
       </div>
     </header>
 
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-icon blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-        </div>
-        <div class="metric-value" id="totalInvoices">0</div>
-        <div class="metric-label">Total Invoices</div>
-        <span class="metric-change">↑ This month</span>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-icon green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="1" x2="12" y2="23"></line>
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-          </svg>
-        </div>
-        <div class="metric-value" id="totalAmount">₪0</div>
-        <div class="metric-label">Total Amount</div>
-        <span class="metric-change">All invoices</span>
-      </div>
-
-      <div class="chart-card">
-        <div class="chart-header">
-          <div class="chart-title">Invoice Activity</div>
-          <div class="chart-controls">
-            <button class="chart-btn active" onclick="loadChartData('week')">Week</button>
-            <button class="chart-btn" onclick="loadChartData('month')">Month</button>
-            <button class="chart-btn" onclick="loadChartData('year')">Year</button>
-          </div>
-        </div>
-        <div class="chart-container">
-          <canvas id="invoiceChart"></canvas>
-        </div>
-      </div>
-    </div>
-
     <div class="main-content">
       <div class="card upload-section">
         <div class="card-header">
@@ -1460,6 +1422,48 @@
         </div>
       </div>
     </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="metric-value" id="totalInvoices">0</div>
+        <div class="metric-label">Total Invoices</div>
+        <span class="metric-change">↑ This month</span>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="metric-value" id="totalAmount">₪0</div>
+        <div class="metric-label">Total Amount</div>
+        <span class="metric-change">All invoices</span>
+      </div>
+
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Invoice Activity</div>
+          <div class="chart-controls">
+            <button class="chart-btn active" onclick="loadChartData('week')">Week</button>
+            <button class="chart-btn" onclick="loadChartData('month')">Month</button>
+            <button class="chart-btn" onclick="loadChartData('year')">Year</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="invoiceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div id="toastContainer" class="toast-container"></div>
