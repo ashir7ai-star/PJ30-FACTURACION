@@ -1129,11 +1129,238 @@
         align-items: flex-start;
       }
     }
+
+    /* ===================================== */
+    /* LOGIN SCREEN STYLES */
+    /* ===================================== */
+    .login-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .login-container {
+      background: var(--bg);
+      padding: 48px 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .login-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .google-signin-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .login-footer {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 24px;
+    }
+
+    .access-denied {
+      background: #FEE;
+      border: 2px solid #F88;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+
+    .access-denied-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .access-denied-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #C00;
+      margin-bottom: 12px;
+    }
+
+    .access-denied-message {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .try-another-btn {
+      padding: 12px 24px;
+      background: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .try-another-btn:hover {
+      background: #3367D6;
+    }
+
+    .app-hidden {
+      display: none !important;
+    }
+
+    /* User profile in header */
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-profile:hover {
+      background: var(--border);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 8px;
+      min-width: 200px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .user-dropdown.active {
+      display: block;
+    }
+
+    .user-dropdown-item {
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.2s;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .user-dropdown-item:hover {
+      background: var(--bg-secondary);
+    }
+
+    .user-dropdown-item svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .user-dropdown-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta name="google-signin-client_id" content="1002299345818-efip0evqdnhnjg0a1inb950usltu9qlu.apps.googleusercontent.com">
 </head>
 
 <body>
+  <!-- ========================================= -->
+  <!-- LOGIN SCREEN -->
+  <!-- ========================================= -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-container">
+      <div class="login-logo">
+        <img src="data:image/png;base64,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" alt="Invoice AI" style="width: 100%; height: 100%;">
+      </div>
+      
+      <h1 class="login-title">Invoice AI</h1>
+      <p class="login-subtitle">AI-Powered Invoice Processing</p>
+      
+      <div class="google-signin-wrapper">
+        <div id="g_id_onload"
+             data-client_id="1002299345818-efip0evqdnhnjg0a1inb950usltu9qlu.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+      </div>
+      
+      <div id="accessDeniedMessage" style="display: none;" class="access-denied">
+        <div class="access-denied-icon">⚠️</div>
+        <div class="access-denied-title">Access Denied</div>
+        <div class="access-denied-message">
+          Your email <strong id="deniedEmail"></strong> is not authorized to access this system.
+          <br><br>
+          Please contact your administrator to request access.
+        </div>
+        <button onclick="location.reload()" class="try-another-btn">
+          Try Another Account
+        </button>
+      </div>
+      
+      <div class="login-footer">
+        Secure authentication powered by Google
+      </div>
+    </div>
+  </div>
+
+
   <div id="setupModal" class="setup-modal">
     <div class="setup-content">
       <button class="modal-close-btn" onclick="closeSetupModal()" title="Close">
@@ -1213,7 +1440,7 @@
     </div>
   </div>
 
-  <div class="container">
+  <div class="container app-hidden" id="appContainer">
     <header class="header">
       <div class="header-left">
         <div class="logo">
@@ -1476,9 +1703,254 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <script>
+    // ============================================
+    // AUTHENTICATION SYSTEM
+    // ============================================
+    
+    const AUTH_CONFIG = {
+      SHEET_ID: '1rlH4GQ2wdKq0z3Yzr4Rp7tFhbWibBmO5Byioo989ZHM',
+      // Asegúrate de que esta URL sea la misma que tu CENTRAL_APPS_SCRIPT_URL
+    };
+
+    // Verificar sesión al cargar
+    window.addEventListener('load', function() {
+      const userEmail = localStorage.getItem('userEmail');
+      const authToken = localStorage.getItem('authToken');
+      
+      if (userEmail && authToken) {
+        // Ya hay sesión, verificar que todavía está autorizado
+        console.log('Sesión existente detectada:', userEmail);
+        verifyAndShowDashboard(userEmail);
+      } else {
+        // No hay sesión, mostrar login
+        console.log('No hay sesión, mostrando login');
+        showLoginScreen();
+      }
+    });
+
+    // Manejar respuesta de Google Sign-In
+    function handleCredentialResponse(response) {
+      console.log('Google Sign-In response received');
+      
+      try {
+        // Decodificar JWT token
+        const user = parseJwt(response.credential);
+        console.log('Usuario:', user.email);
+        
+        // Guardar token temporalmente
+        localStorage.setItem('authToken', response.credential);
+        
+        // Verificar autorización
+        checkAuthorization(user.email, user.name, user.picture)
+          .then(authData => {
+            if (authData.authorized) {
+              // ✅ Autorizado
+              console.log('✅ Usuario autorizado');
+              saveUserSession(user.email, user.name, user.picture, authData.role);
+              showDashboard();
+              showToast('Welcome', `Signed in as ${user.name}`, 'success');
+            } else {
+              // ❌ No autorizado
+              console.log('❌ Usuario no autorizado:', authData.reason);
+              showAccessDenied(user.email, authData.reason);
+            }
+          })
+          .catch(error => {
+            console.error('Error verificando autorización:', error);
+            showToast('Error', 'Could not verify authorization. Please try again.', 'error');
+            clearSession();
+            showLoginScreen();
+          });
+      } catch (error) {
+        console.error('Error procesando respuesta de Google:', error);
+        showToast('Error', 'Authentication error. Please try again.', 'error');
+      }
+    }
+
+    // Verificar autorización con el Sheet
+    async function checkAuthorization(email, name, picture) {
+      try {
+        const url = `${CONFIG.CENTRAL_APPS_SCRIPT_URL}?action=checkAuth&email=${encodeURIComponent(email)}`;
+        console.log('Verificando autorización:', url);
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        console.log('Respuesta de autorización:', data);
+        return data;
+      } catch (error) {
+        console.error('Error checking authorization:', error);
+        throw error;
+      }
+    }
+
+    // Verificar y mostrar dashboard (para sesión existente)
+    async function verifyAndShowDashboard(email) {
+      try {
+        const authData = await checkAuthorization(email);
+        if (authData.authorized) {
+          showDashboard();
+        } else {
+          // Sesión inválida, limpiar y mostrar login
+          clearSession();
+          showLoginScreen();
+        }
+      } catch (error) {
+        console.error('Error verificando sesión:', error);
+        clearSession();
+        showLoginScreen();
+      }
+    }
+
+    // Guardar sesión del usuario
+    function saveUserSession(email, name, picture, role) {
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userName', name || email);
+      localStorage.setItem('userPicture', picture || '');
+      localStorage.setItem('userRole', role || 'User');
+      console.log('Sesión guardada:', email);
+    }
+
+    // Limpiar sesión
+    function clearSession() {
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userPicture');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userRole');
+      console.log('Sesión limpiada');
+    }
+
+    // Mostrar login screen
+    function showLoginScreen() {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appContainer').classList.add('app-hidden');
+      document.getElementById('accessDeniedMessage').style.display = 'none';
+    }
+
+    // Mostrar dashboard
+    function showDashboard() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appContainer').classList.remove('app-hidden');
+      
+      // Actualizar UI con info del usuario
+      updateUserProfile();
+      
+      // Cargar datos del dashboard
+      if (typeof loadDashboard === 'function') {
+        loadDashboard();
+      }
+    }
+
+    // Mostrar mensaje de acceso denegado
+    function showAccessDenied(email, reason) {
+      document.getElementById('deniedEmail').textContent = email;
+      document.getElementById('accessDeniedMessage').style.display = 'block';
+      
+      // Limpiar sesión
+      clearSession();
+    }
+
+    // Actualizar perfil de usuario en el header
+    function updateUserProfile() {
+      const userName = localStorage.getItem('userName');
+      const userPicture = localStorage.getItem('userPicture');
+      const userEmail = localStorage.getItem('userEmail');
+      
+      // Buscar el botón Connected y reemplazarlo con perfil de usuario
+      const connectedBtn = document.querySelector('.header-actions button:last-child');
+      if (connectedBtn && userName) {
+        connectedBtn.innerHTML = `
+          <div class="user-profile" onclick="toggleUserDropdown(event)">
+            ${userPicture ? 
+              `<img src="${userPicture}" alt="${userName}" class="user-avatar">` : 
+              `<div class="user-avatar" style="background: #4285F4; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">${userName.charAt(0).toUpperCase()}</div>`
+            }
+            <span class="user-name">${userName}</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6l4 4 4-4"/>
+            </svg>
+          </div>
+        `;
+        
+        // Agregar dropdown
+        const dropdown = document.createElement('div');
+        dropdown.id = 'userDropdown';
+        dropdown.className = 'user-dropdown';
+        dropdown.innerHTML = `
+          <div class="user-dropdown-item" style="pointer-events: none; opacity: 0.7;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <div>
+              <div style="font-weight: 600; font-size: 14px;">${userName}</div>
+              <div style="font-size: 12px; color: #666;">${userEmail}</div>
+            </div>
+          </div>
+          <div class="user-dropdown-divider"></div>
+          <div class="user-dropdown-item" onclick="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
+          </div>
+        `;
+        document.body.appendChild(dropdown);
+      }
+    }
+
+    // Toggle user dropdown
+    function toggleUserDropdown(event) {
+      event.stopPropagation();
+      const dropdown = document.getElementById('userDropdown');
+      if (dropdown) {
+        dropdown.classList.toggle('active');
+      }
+    }
+
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function() {
+      const dropdown = document.getElementById('userDropdown');
+      if (dropdown && dropdown.classList.contains('active')) {
+        dropdown.classList.remove('active');
+      }
+    });
+
+    // Logout
+    function logout() {
+      console.log('Logging out...');
+      clearSession();
+      showToast('Logged Out', 'You have been signed out successfully', 'info');
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    }
+
+    // Decodificar JWT (del token de Google)
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (error) {
+        console.error('Error parsing JWT:', error);
+        throw error;
+      }
+    }
+
+
     const CONFIG = {
       N8N_WEBHOOK_URL: 'https://yehuda-levi-n8n.nr6aco.easypanel.host/webhook/PJ30-yehuda',
-      CENTRAL_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzn-bkTPbm6qDKuiu1CiIvhGMIhd4cfwH-fj5JQ4-IV0RPncOON-A_VD_7omxuYgkijeQ/exec',
+      CENTRAL_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzn-bkTPbm6qDKuiu1CiIvhGMIhd4cfwH-fj5JQ4-IV0RPncOON-A_VD_7omxuYgkijeQ/exec",
       TEMPLATE_URL: 'https://docs.google.com/spreadsheets/d/1x3XTMFMEl5K_UIY0KdBtkCdpbleHUWArPXXz5s5yqjk/copy'
     };
 
@@ -2126,7 +2598,6 @@
 </body>
 
 </html>
-
 
 
 
