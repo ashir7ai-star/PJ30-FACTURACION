@@ -2594,7 +2594,151 @@
       initTheme();
       checkConfiguration();
     });
-  </script>
+  
+    // Contact Us - Show email
+    function showContactUs() {
+      const email = 'devops@ashir-ai.com';
+      
+      // Crear modal temporal
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+      `;
+      
+      modal.innerHTML = `
+        <div style="
+          background: white;
+          padding: 32px;
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+          max-width: 400px;
+          text-align: center;
+        ">
+          <div style="
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          ">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          
+          <h2 style="
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+          ">Contact Us</h2>
+          
+          <p style="
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+          ">Need help? Send us an email:</p>
+          
+          <div style="
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          ">
+            <span style="
+              font-size: 16px;
+              font-weight: 600;
+              color: #1e3a8a;
+            ">${email}</span>
+            <button onclick="copyEmail('${email}')" style="
+              background: #3b82f6;
+              color: white;
+              border: none;
+              padding: 8px 16px;
+              border-radius: 8px;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: background 0.2s;
+            " onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+              Copy
+            </button>
+          </div>
+          
+          <div style="display: flex; gap: 12px;">
+            <button onclick="window.location.href='mailto:${email}'" style="
+              flex: 1;
+              background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+              color: white;
+              border: none;
+              padding: 12px;
+              border-radius: 8px;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: opacity 0.2s;
+            " onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+              Send Email
+            </button>
+            <button onclick="this.closest('div[style*=fixed]').remove()" style="
+              flex: 1;
+              background: #f1f5f9;
+              color: #64748b;
+              border: none;
+              padding: 12px;
+              border-radius: 8px;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: background 0.2s;
+            " onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+              Close
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Cerrar con click fuera
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.remove();
+        }
+      });
+      
+      // Cerrar dropdown de Quick Actions
+      const dropdown = document.querySelector('.quick-actions-dropdown');
+      if (dropdown && dropdown.classList.contains('active')) {
+        dropdown.classList.remove('active');
+      }
+    }
+    
+    // Copiar email al clipboard
+    function copyEmail(email) {
+      navigator.clipboard.writeText(email).then(() => {
+        showToast('Copied!', 'Email copied to clipboard', 'success');
+      }).catch(() => {
+        showToast('Error', 'Could not copy email', 'error');
+      });
+    }
+</script>
 </body>
 
 </html>
